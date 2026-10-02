@@ -1,0 +1,40 @@
+{
+  "name": "knock-roll-die-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Knock Roll Die: tarot, magic 8 ball and dice for the BUSY Bar. Spin the wheel, press Start, draw.",
+  "author": "Sergey Trofimov",
+  "type": "module",
+  "scripts": {
+    "build": "busy-cli build",
+    "typecheck": "tsc -b",
+    "lint": "biome ci .",
+    "format": "biome check --write .",
+    "test": "vitest run",
+    "decks": "python3 tools/make_sounds.py && python3 tools/make_deck.py",
+    "check": "pnpm typecheck && pnpm lint && pnpm test",
+    "push": "pnpm build && sh tools/push.sh"
+  },
+  "engines": {
+    "node": ">=24 <26"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@busy-app/cli": "^0.2.0",
+    "@types/node": "^24.19.0",
+    "typescript": "~7.0.2",
+    "vite": "8.1.4",
+    "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "@busy-app/busy-lib": "^0.21.1"
+  },
+  "license": "MIT",
+  "keywords": [
+    "busy-bar",
+    "tarot",
+    "dice",
+    "js-app"
+  ],
+  "packageManager": "pnpm@10.26.2"
+}

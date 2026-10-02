@@ -1,0 +1,126 @@
+{
+  "format_version": 1,
+  "version": 1,
+  "fields": {
+    "deck": {
+      "label": "Deck",
+      "description": "What the wheel picks from.",
+      "type": "enum",
+      "default": "classic",
+      "options": [
+        {
+          "value": "classic",
+          "label": "Tarot"
+        },
+        {
+          "value": "neon",
+          "label": "Neon"
+        },
+        {
+          "value": "ball",
+          "label": "8 ball"
+        },
+        {
+          "value": "d4",
+          "label": "d4"
+        },
+        {
+          "value": "d6",
+          "label": "d6"
+        },
+        {
+          "value": "d8",
+          "label": "d8"
+        },
+        {
+          "value": "d10",
+          "label": "d10"
+        },
+        {
+          "value": "d12",
+          "label": "d12"
+        },
+        {
+          "value": "d20",
+          "label": "d20"
+        },
+        {
+          "value": "d100",
+          "label": "d100"
+        }
+      ]
+    },
+    "spread": {
+      "label": "Results",
+      "description": "Results per reading; Auto takes the deck's own.",
+      "type": "enum",
+      "default": "auto",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ]
+    },
+    "back": {
+      "label": "Card back",
+      "description": "Picture on the wheel's cards. Auto uses the deck's own.",
+      "type": "enum",
+      "default": "auto",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "diamond",
+          "label": "Diamond"
+        },
+        {
+          "value": "lattice",
+          "label": "Lattice"
+        },
+        {
+          "value": "sparkle",
+          "label": "Sparkle"
+        },
+        {
+          "value": "plain",
+          "label": "Plain"
+        }
+      ]
+    },
+    "sound": {
+      "label": "Sound",
+      "description": "Play the deck's sounds.",
+      "type": "boolean",
+      "default": true
+    },
+    "color": {
+      "label": "Color",
+      "description": "Background behind the classic deck's white line art.",
+      "type": "color",
+      "default": "#7C3AEDFF"
+    }
+  }
+}

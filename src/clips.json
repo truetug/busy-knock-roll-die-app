@@ -1,0 +1,148 @@
+{
+  "fps": 60,
+  "levels": 6,
+  "variants": [
+    {
+      "file": "strip-0.anim",
+      "fill": "#2E1065FF",
+      "edge": "#C4B5FDFF"
+    },
+    {
+      "file": "strip-1.anim",
+      "fill": "#2E1065FF",
+      "edge": "#FFD24DFF"
+    },
+    {
+      "file": "strip-2.anim",
+      "fill": "#000000FF",
+      "edge": "#8B2CFFFF"
+    },
+    {
+      "file": "strip-3.anim",
+      "fill": "#0B1B4DFF",
+      "edge": "#5B7BD5FF"
+    }
+  ],
+  "clips": {
+    "rest": {
+      "frames": 1,
+      "loop": true,
+      "click": null
+    },
+    "hold-1": {
+      "frames": 30,
+      "loop": true,
+      "click": 15
+    },
+    "launch-1": {
+      "frames": 60,
+      "loop": false,
+      "click": 43
+    },
+    "hold-2": {
+      "frames": 20,
+      "loop": true,
+      "click": 10
+    },
+    "launch-2": {
+      "frames": 40,
+      "loop": false,
+      "click": 29
+    },
+    "hold-3": {
+      "frames": 15,
+      "loop": true,
+      "click": 8
+    },
+    "launch-3": {
+      "frames": 30,
+      "loop": false,
+      "click": 22
+    },
+    "hold-4": {
+      "frames": 12,
+      "loop": true,
+      "click": 6
+    },
+    "launch-4": {
+      "frames": 24,
+      "loop": false,
+      "click": 17
+    },
+    "hold-5": {
+      "frames": 10,
+      "loop": true,
+      "click": 5
+    },
+    "launch-5": {
+      "frames": 20,
+      "loop": false,
+      "click": 15
+    },
+    "hold-6": {
+      "frames": 8,
+      "loop": true,
+      "click": 4
+    },
+    "launch-6": {
+      "frames": 16,
+      "loop": false,
+      "click": 12
+    },
+    "up-1": {
+      "frames": 24,
+      "loop": false,
+      "click": 14
+    },
+    "down-2": {
+      "frames": 24,
+      "loop": false,
+      "click": 10
+    },
+    "up-2": {
+      "frames": 17,
+      "loop": false,
+      "click": 10
+    },
+    "down-3": {
+      "frames": 17,
+      "loop": false,
+      "click": 7
+    },
+    "up-3": {
+      "frames": 13,
+      "loop": false,
+      "click": 7
+    },
+    "down-4": {
+      "frames": 13,
+      "loop": false,
+      "click": 6
+    },
+    "up-4": {
+      "frames": 11,
+      "loop": false,
+      "click": 6
+    },
+    "down-5": {
+      "frames": 11,
+      "loop": false,
+      "click": 5
+    },
+    "up-5": {
+      "frames": 9,
+      "loop": false,
+      "click": 5
+    },
+    "down-6": {
+      "frames": 9,
+      "loop": false,
+      "click": 4
+    },
+    "stop": {
+      "frames": 72,
+      "loop": false,
+      "click": 18
+    }
+  }
+}

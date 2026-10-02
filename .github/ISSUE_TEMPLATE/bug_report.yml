@@ -1,0 +1,37 @@
+name: Bug report
+description: Something does not work as it should
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: And what did you expect instead?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: firmware
+    attributes:
+      label: Bar firmware version
+      description: "`GET /api/version` on the bar, or Settings → About"
+  - type: input
+    id: deck
+    attributes:
+      label: Deck
+      description: Which deck was selected, or the deck file if it is your own
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+  - type: textarea
+    id: log
+    attributes:
+      label: Log or screenshot
+      description: "A screenshot is `GET /api/screen?display=0`; the log is `POST /api/log_dump?filename=log`."

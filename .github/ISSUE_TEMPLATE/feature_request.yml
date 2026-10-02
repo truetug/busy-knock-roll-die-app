@@ -1,0 +1,15 @@
+name: Idea or new deck
+description: Suggest a feature, or a deck you would like included
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like
+      description: What it does and when you would use it. For a deck, say what it contains and how a result looks.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered

@@ -1,0 +1,5 @@
+line-length = 130
+src = ["tools"]
+
+[lint]
+select = ["E", "F", "I", "B", "UP"]
