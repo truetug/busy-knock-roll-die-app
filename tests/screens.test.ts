@@ -55,9 +55,46 @@ describe("frame", () => {
       return f?.type === "rectangle" ? f.border_color : undefined;
     };
     s.braking = false;
-    expect(border()).toBe("#FFD24DFF");
+    expect(border()).toBe(s.deck.back?.edge);
     s.braking = true;
     expect(border()).toBe("#FFFFFFFF");
+  });
+
+  it("shows no progress pips for a game of many results", () => {
+    freshState(parseShipped("loto"));
+    s.phase = "ready";
+    expect(frame().filter((e) => e.id.startsWith("dot-"))).toHaveLength(0);
+  });
+
+  it("warms the frame of a spinning wheel to gold as the dial nudges the draw, less with every turn", () => {
+    const border = () => {
+      const f = frame().find((e) => e.id === "frame");
+      return f?.type === "rectangle" ? f.border_color : undefined;
+    };
+    s.phase = "spin";
+    s.braking = false;
+    s.turns = 0;
+    const plain = border();
+    const steps = [1, 2, 3, 6].map((turns) => {
+      s.turns = turns;
+      return border();
+    });
+    expect(steps[0]).not.toBe(plain);
+    expect(new Set([plain, ...steps]).size).toBe(5);
+    expect(steps[3]).not.toBe("#FFFFFFFF"); // never quite white: the nudge has a limit (the classic card's edge is gold: it warms to white)
+  });
+
+  it("lights the middle card as the wheel comes to rest", () => {
+    const border = () => {
+      const f = frame().find((e) => e.id === "frame");
+      return f?.type === "rectangle" ? f.border_color : undefined;
+    };
+    s.phase = "spin";
+    s.braking = false;
+    s.wheel.clip = "hold-5";
+    expect(border()).toBe(s.deck.back?.edge);
+    s.wheel.clip = "stop-1";
+    expect(border()).toBe("#FFD24DFF");
   });
 
   it("grows the picked card before showing it", () => {

@@ -1,10 +1,13 @@
 // Reads decks from the device's storage over its own loopback HTTP API.
 
 import { APP, STORAGE_PATH_MAX } from "../config.ts";
+import { rng } from "../random/seed.ts";
+import { utf8Length } from "../util.ts";
 import { type Deck, deckFileName, decodeRecord, type Part, parseDeck, splitHeader } from "./format.ts";
 
 const API = "http://127.0.0.1/api";
 const RESOURCES_DIR = `/ext/user_assets/${APP}/resources`;
+// A deck file's header ends on a multiple of this many bytes (see docs/DECKS.md): a block never cuts a letter in two.
 const HEADER_CHUNK = 1024;
 const HEADER_CHUNKS_MAX = 4;
 
@@ -33,13 +36,14 @@ async function readRange(file: string, start: number, end: number): Promise<stri
   return res.text();
 }
 
-/** Reads a header of any length, chunk by chunk, until its delimiter shows up. The storage API answers 416 to a range past the end of the file, hence `size`. */
+/** Reads a header of any length, a chunk more each time, until its delimiter shows up. The storage API answers 416 to a range past the end of the file, hence `size`. */
 export async function readHeader(file: string, size: number): Promise<{ head: string; dataStart: number }> {
-  let text = "";
-  for (let i = 0; i < HEADER_CHUNKS_MAX && i * HEADER_CHUNK < size; i++) {
-    text += await readRange(file, i * HEADER_CHUNK, Math.min(size, (i + 1) * HEADER_CHUNK) - 1);
+  // Each round reads the file from its start, so a letter cut by the end of a chunk is never glued to its other half.
+  for (let i = 1; i <= HEADER_CHUNKS_MAX && (i - 1) * HEADER_CHUNK < size; i++) {
+    const text = await readRange(file, 0, Math.min(size, i * HEADER_CHUNK) - 1);
     const split = splitHeader(text);
-    if (split) return split;
+    // splitHeader counts characters; the records are found by byte.
+    if (split) return { head: split.head, dataStart: utf8Length(text.slice(0, split.dataStart)) };
   }
   throw new Error(`${file}: no "---" line ending the header`);
 }
@@ -62,6 +66,7 @@ export async function loadItem(deck: Deck, value: number): Promise<Part[]> {
 
   const start = deck.dataStart + (value - 1) * deck.recordSize;
   const record = await readRange(deck.file, start, start + deck.recordSize - 1);
-  if (record.length !== deck.recordSize) throw new Error(`${deck.file}: item ${value}: got ${record.length} bytes`);
-  return decodeRecord(deck, record);
+  const got = utf8Length(record);
+  if (got !== deck.recordSize) throw new Error(`${deck.file}: item ${value}: got ${got} bytes`);
+  return decodeRecord(deck, record, value, () => rng().float());
 }

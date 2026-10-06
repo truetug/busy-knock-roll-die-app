@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { clamp, errorMessage, lerp, shuffled, wrapWords } from "../src/util.ts";
+import { clamp, colorDistance, errorMessage, lerp, mixColor, utf8Length, wrapWords } from "../src/util.ts";
+
+describe("utf8Length", () => {
+  it("counts bytes, not characters", () => {
+    expect(utf8Length("ABC")).toBe(3);
+    expect(utf8Length("Иван")).toBe(8);
+    expect(utf8Length("€")).toBe(3);
+    expect(utf8Length("😀")).toBe(4);
+  });
+});
 
 describe("wrapWords", () => {
   it("keeps short text on one line", () => {
@@ -19,15 +28,18 @@ describe("wrapWords", () => {
   });
 });
 
-describe("shuffled", () => {
-  it("is a permutation of 1..size", () => {
-    const values = shuffled(78);
-    expect([...values].sort((a, b) => a - b)).toEqual(Array.from({ length: 78 }, (_, i) => i + 1));
+describe("mixColor", () => {
+  it("runs from one colour to the other", () => {
+    expect(mixColor("#000000FF", "#FFD24DFF", 0)).toBe("#000000FF");
+    expect(mixColor("#000000FF", "#FFD24DFF", 1)).toBe("#FFD24DFF");
+    expect(mixColor("#000000FF", "#FEFEFEFF", 0.5)).toBe("#7F7F7FFF");
   });
+});
 
-  it("handles a single item and none", () => {
-    expect(shuffled(1)).toEqual([1]);
-    expect(shuffled(0)).toEqual([]);
+describe("colorDistance", () => {
+  it("is 0 for the same colour and grows with the difference", () => {
+    expect(colorDistance("#FFD24DFF", "#FFD24DFF")).toBe(0);
+    expect(colorDistance("#000000FF", "#FFFFFFFF")).toBe(765);
   });
 });
 

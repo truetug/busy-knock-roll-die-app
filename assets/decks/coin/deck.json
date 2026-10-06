@@ -1,0 +1,1 @@
+{"name": "Coin", "order": 13, "bg": "1E1B4B", "repeat": true, "spread": 1, "steps": ["text"], "intro": ["FLIP A COIN", "PRESS START"], "back": {"ring": "F5C16C", "core": "A8641F", "fill": "1E1B4B", "edge": "F5C16C", "rows": ["..AAAAA..", ".AAAAAAA.", "AAABBBAAA", "AABBBBBAA", "AABBBBBAA", "AABBBBBAA", "AAABBBAAA", ".AAAAAAA.", "..AAAAA.."]}, "description": "heads or tails"}

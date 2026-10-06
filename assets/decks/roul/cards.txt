@@ -1,0 +1,39 @@
+# European roulette: the 37 pockets, 0 first. The picture is the pocket's number on its colour; Start shows colour, parity and half.
+# Written by tools/make-generated-decks.ts: change it there.
+0 | ZERO / GREEN
+1 | RED / ODD, 1-18
+2 | BLACK / EVEN, 1-18
+3 | RED / ODD, 1-18
+4 | BLACK / EVEN, 1-18
+5 | RED / ODD, 1-18
+6 | BLACK / EVEN, 1-18
+7 | RED / ODD, 1-18
+8 | BLACK / EVEN, 1-18
+9 | RED / ODD, 1-18
+10 | BLACK / EVEN, 1-18
+11 | BLACK / ODD, 1-18
+12 | RED / EVEN, 1-18
+13 | BLACK / ODD, 1-18
+14 | RED / EVEN, 1-18
+15 | BLACK / ODD, 1-18
+16 | RED / EVEN, 1-18
+17 | BLACK / ODD, 1-18
+18 | RED / EVEN, 1-18
+19 | RED / ODD, 19-36
+20 | BLACK / EVEN, 19-36
+21 | RED / ODD, 19-36
+22 | BLACK / EVEN, 19-36
+23 | RED / ODD, 19-36
+24 | BLACK / EVEN, 19-36
+25 | RED / ODD, 19-36
+26 | BLACK / EVEN, 19-36
+27 | RED / ODD, 19-36
+28 | BLACK / EVEN, 19-36
+29 | BLACK / ODD, 19-36
+30 | RED / EVEN, 19-36
+31 | BLACK / ODD, 19-36
+32 | RED / EVEN, 19-36
+33 | BLACK / ODD, 19-36
+34 | RED / EVEN, 19-36
+35 | BLACK / ODD, 19-36
+36 | RED / EVEN, 19-36

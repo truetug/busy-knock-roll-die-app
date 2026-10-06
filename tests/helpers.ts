@@ -4,6 +4,9 @@ import { type Deck, deckIdFromFile, parseDeck, splitHeader } from "../src/deck/f
 import { resetReading, resetWheel, s } from "../src/state.ts";
 
 export const SRC = join(import.meta.dirname, "..", "src");
+/** A record read as bytes (one character per byte, as `shippedDeckFiles` gives it) decoded as the UTF-8 text it holds. */
+export const utf8 = (bytes: string): string => Buffer.from(bytes, "latin1").toString("utf8");
+
 export const SETTINGS_COLOR = "#7C3AEDFF";
 
 /** The deck files shipped in src/, by id. */
@@ -19,7 +22,7 @@ export function parseShipped(id: string): Deck {
   if (!deck) throw new Error(`no shipped deck ${id}`);
   const split = splitHeader(deck.text);
   if (!split) throw new Error(`${deck.file}: no header`);
-  return parseDeck(split.head, split.dataStart, deck.file, deck.text.length, SETTINGS_COLOR);
+  return parseDeck(utf8(split.head), split.dataStart, deck.file, deck.text.length, SETTINGS_COLOR);
 }
 
 /** Puts the app state back to a loaded start screen with the given deck. */
@@ -27,6 +30,11 @@ export function freshState(deck: Deck, spreadSetting: number | null = null): voi
   s.deck = deck;
   s.spreadSetting = spreadSetting;
   s.loaded = true;
+  s.auto = false;
+  s.random = false;
+  s.upNext = "";
+  s.autoAt = 0;
+
   s.errorText = "";
   s.phase = "intro";
   s.parts = [];

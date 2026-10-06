@@ -157,6 +157,24 @@ describe("a reading", () => {
   });
 });
 
+describe("a lotto game", () => {
+  it("is a whole game of 90 barrels, whatever the spread setting says, and no barrel comes twice", () => {
+    freshState(parseShipped("loto"), 3);
+    expect(s.spreadTarget).toBe(90);
+
+    const seen: number[] = [];
+    for (let i = 0; i < 90; i++) {
+      drawOne();
+      seen.push(s.value ?? 0);
+      finishReveal(0);
+      onStart(0); // the number → its name
+      onStart(0); // → the next barrel
+    }
+    expect(new Set(seen).size).toBe(90);
+    expect(s.phase).toBe("intro");
+  });
+});
+
 describe("sounds", () => {
   beforeEach(() => freshState(tarot(), 2));
 

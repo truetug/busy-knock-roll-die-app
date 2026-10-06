@@ -17,3 +17,11 @@ describe("resourcePath", () => {
     expect(() => resourcePath(deckFileName("x".repeat(40)))).toThrow(/name too long/);
   });
 });
+
+describe("the app id", () => {
+  it("is the one in the manifest", async () => {
+    const { default: manifest } = await import("../src/appmeta/manifest.json");
+    const { APP } = await import("../src/config.ts");
+    expect(APP).toBe(manifest.id);
+  });
+});

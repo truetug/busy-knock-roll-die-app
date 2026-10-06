@@ -2,9 +2,9 @@
 // plus the wheel's click. A .snd file is raw signed 16-bit little-endian mono PCM at 44100 Hz;
 // replace the files to change the sounds.
 
-import { device } from "@shared/device";
 import { APP, CLICK_SOUND, type SoundEvent } from "./config.ts";
-import { enqueue, pendingOf } from "./display.ts";
+import { device } from "./device.ts";
+import { enqueue, pendingOf } from "./queue.ts";
 import { s } from "./state.ts";
 import { report } from "./util.ts";
 
@@ -47,7 +47,7 @@ export function playClicks(delays: number[]): void {
 
   for (const delay of delays) {
     setTimeout(() => {
-      if (pendingOf("sound") === 0) play(CLICK_SOUND);
+      if (pendingOf("sound") === 0 && pendingOf("strip") === 0 && pendingOf("frame") === 0) play(CLICK_SOUND);
     }, delay);
   }
 }

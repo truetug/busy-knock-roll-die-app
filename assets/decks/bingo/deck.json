@@ -1,0 +1,1 @@
+{"name": "Bingo", "order": 11, "bg": "0F3D2E", "repeat": false, "spread": 75, "steps": ["text", "number"], "intro": ["BINGO!", "PRESS START"], "back": {"ring": "D4AF37", "core": "C1121F", "fill": "0F3D2E", "edge": "D4AF37"}, "description": "the 75 balls: a letter, then the number"}

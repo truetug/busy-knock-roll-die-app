@@ -1,0 +1,1 @@
+{"name": "2d6", "order": 18, "bg": "0F3D2E", "repeat": true, "spread": 1, "luck": "2*1,3*2,4*3,5*4,6*5,7*6,8*5,9*4,10*3,11*2,12*1", "steps": ["art", "text:0F3D2E"], "intro": ["ROLL THE DICE", "PRESS START"], "back": {"ring": "F8F8F2", "core": "15151A", "fill": "0F3D2E", "edge": "F8F8F2"}, "description": "two dice, the 36 throws: their sum comes up as it does with real dice"}

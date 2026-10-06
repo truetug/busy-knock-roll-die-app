@@ -28,3 +28,12 @@ __pycache__/
 
 # Tests
 coverage/
+
+# Built from assets/ by `pnpm decks` (and by build and test)
+src/deck-*.txt
+
+# Packed builds (see the Makefile)
+builds/
+
+# Where this machine finds the bar (tools/bar.sh)
+.bar.env

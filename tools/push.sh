@@ -1,11 +1,12 @@
 #!/bin/sh
 # Uploads the built package (dist/<app id>/) to a BUSY Bar over its HTTP API.
-# usage: tools/push.sh <bar address> [api token]   e.g. tools/push.sh 192.168.1.20 1111
+# usage: tools/push.sh [bar address [api token]]   e.g. tools/push.sh 192.168.1.20 <token>
+# Without an address it asks tools/bar.sh, which knows whether the bar is on this network or behind the jump host.
 set -eu
 
-addr=${1:?usage: tools/push.sh <bar address[:port]> [api token]}
-token=${2:-}
 root=$(cd "$(dirname "$0")/.." && pwd)
+addr=${1:-$(sh "$root/tools/bar.sh")}
+token=${2:-${BAR_TOKEN:-}}
 id=$(jq -er .id "$root/src/appmeta/manifest.json")
 dist="$root/dist/$id"
 

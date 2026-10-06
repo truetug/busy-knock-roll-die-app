@@ -6,14 +6,19 @@
   "author": "Sergey Trofimov",
   "type": "module",
   "scripts": {
-    "build": "busy-cli build",
+    "build": "pnpm decks && busy-cli build",
     "typecheck": "tsc -b",
     "lint": "biome ci .",
     "format": "biome check --write .",
-    "test": "vitest run",
-    "decks": "python3 tools/make_sounds.py && python3 tools/make_deck.py",
+    "test": "pnpm decks && vitest run",
+    "decks": "node tools/make-generated-decks.ts && node tools/make-decks.ts",
+    "sounds": "node tools/make-sounds.ts",
+    "deck": "node tools/build-deck.ts",
+    "check-deck": "node tools/check-deck.ts",
+    "monte-carlo": "node tools/monte-carlo.ts",
     "check": "pnpm typecheck && pnpm lint && pnpm test",
-    "push": "pnpm build && sh tools/push.sh"
+    "push": "pnpm build && sh tools/push.sh",
+    "bar": "sh tools/bar.sh"
   },
   "engines": {
     "node": ">=24 <26"
@@ -22,6 +27,8 @@
     "@biomejs/biome": "2.5.15",
     "@busy-app/cli": "^0.2.0",
     "@types/node": "^24.19.0",
+    "@types/pngjs": "^6.0.5",
+    "pngjs": "^7.0.0",
     "typescript": "~7.0.2",
     "vite": "8.1.4",
     "vitest": "^5.0.3"

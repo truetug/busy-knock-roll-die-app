@@ -1,0 +1,10 @@
+# The eight directions of the compass.
+# Written by tools/make-generated-decks.ts: change it there.
+NORTH | NORTH
+NORTHEAST | NORTHEAST
+EAST | EAST
+SOUTHEAST | SOUTHEAST
+SOUTH | SOUTH
+SOUTHWEST | SOUTHWEST
+WEST | WEST
+NORTHWEST | NORTHWEST

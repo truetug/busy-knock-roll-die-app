@@ -17,8 +17,68 @@
           "label": "Neon"
         },
         {
+          "value": "cosmic",
+          "label": "Cosmic"
+        },
+        {
+          "value": "fairy",
+          "label": "Fairy tales"
+        },
+        {
+          "value": "tcount",
+          "label": "Tarot count"
+        },
+        {
+          "value": "runes",
+          "label": "Runes"
+        },
+        {
+          "value": "iching",
+          "label": "I Ching"
+        },
+        {
+          "value": "cards",
+          "label": "Cards"
+        },
+        {
+          "value": "domino",
+          "label": "Dominoes"
+        },
+        {
+          "value": "loto",
+          "label": "Lotto"
+        },
+        {
+          "value": "bingo",
+          "label": "Bingo"
+        },
+        {
+          "value": "roul",
+          "label": "Roulette"
+        },
+        {
+          "value": "coin",
+          "label": "Coin"
+        },
+        {
+          "value": "rps",
+          "label": "RPS"
+        },
+        {
+          "value": "dirs",
+          "label": "Directions"
+        },
+        {
+          "value": "food",
+          "label": "What to eat"
+        },
+        {
           "value": "ball",
           "label": "8 ball"
+        },
+        {
+          "value": "2d6",
+          "label": "2d6"
         },
         {
           "value": "d4",
@@ -79,6 +139,26 @@
         {
           "value": "5",
           "label": "5"
+        }
+      ]
+    },
+    "play": {
+      "label": "Auto play",
+      "description": "Off: you press Start. One game: no start screen, it plays the chosen deck by itself, game after game. Random game: the same, each game from a deck of its own. Results show 3 s each, 5 s between games. Back quits.",
+      "type": "enum",
+      "default": "off",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "one",
+          "label": "One game"
+        },
+        {
+          "value": "random",
+          "label": "Random game"
         }
       ]
     },

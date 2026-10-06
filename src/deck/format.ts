@@ -1,34 +1,38 @@
 // The deck file format and its parser. Pure: no I/O.
 //
-// A deck is one text file, resources/deck-<id>.txt (built by tools/make_deck.py):
-//   a header of KEY=value lines, ended by a line "---", then fixed-size records.
-// An item's record holds the bytes of its steps one after another; each step is
-// one screen of the result and Start moves on to the next. Only the header and
-// the opened item's record are ever read.
+// A deck is one text file, resources/deck-<id>.txt (built by tools/make-decks.ts):
+//   a header of KEY=value lines, ended by a line "---", then the items.
+// An item is plain text: its screens one after another, a blank line between them
+// (Start moves on to the next screen), lines starting with "#" are comments. Every
+// item takes the same number of bytes (RECORD; the file is UTF-8, so text may use any letters) - the last line of an item is a
+// comment of dashes that fills it up - so an item is found by its number alone and
+// only the header and the opened item are ever read.
 
 import { generateXpm2 } from "@busy-app/busy-lib";
 import { BACK_MAX_H, BACK_MAX_W, CARD_BORDER, CARD_FILL, SCREEN_H, SCREEN_W } from "../config.ts";
+import { parseLuck } from "../random/luck.ts";
 
-export const DECK_PREFIX = "deck-";
-export const DECK_SUFFIX = ".txt";
+const DECK_PREFIX = "deck-";
+const DECK_SUFFIX = ".txt";
 /** Ends the header. Matched against "\n" + text, so a header may be empty of lines. */
 const DELIM = "\n---\n";
 const DEFAULT_SPREAD = 3;
 const PALETTE_MAX = 31;
 const PALETTE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+";
-const ART_BYTES = SCREEN_W * SCREEN_H;
+/** A screen is separated from the next by a blank line. */
+const SCREEN_BREAK = /\n[ \t]*\n/;
 
-export type StepKind = "art" | "text" | "die" | "number";
+type StepKind = "art" | "text" | "die" | "number";
 
+/** One screen of an item's result. */
 export type Step = {
   kind: StepKind;
-  /** Bytes in the record (0: drawn from the item number alone). */
-  size: number;
-  /** Where in the record those bytes start. */
-  offset: number;
   /** Background colour, "#RRGGBBFF". */
   bg: string;
 };
+
+/** Art and text screens are written in the item; die faces and numbers are drawn from the item's number alone. */
+const hasScreenText = (step: Step): boolean => step.kind === "art" || step.kind === "text";
 
 /** What a deck says its card backs look like. */
 export type CardBack = {
@@ -39,13 +43,15 @@ export type CardBack = {
 };
 
 export type Deck = {
+  /** The deck's NAME (the title in the settings), or its id. */
+  name: string;
   count: number;
   /** A result may repeat (dice, ball); otherwise drawn items leave the pool. */
   repeat: boolean;
   /** Results per reading when the user's setting says Auto. */
   spread: number;
   steps: Step[];
-  /** Bytes per record: the sum of the steps' sizes. */
+  /** Bytes per item (RECORD); 0 when no step has a screen written in the item. */
   recordSize: number;
   /** Where the first record starts: right after the header. */
   dataStart: number;
@@ -53,6 +59,8 @@ export type Deck = {
   intro2: string;
   /** Small tag drawn on number results, e.g. "D20". */
   label: string | null;
+  /** How good each item is, for the dial's nudge (LUCK); null: the dial changes nothing. */
+  luck: number[] | null;
   /** XPM2 palette for art steps. */
   palette: Record<string, string>;
   /** The deck's own card back; null: the app's default (or the user's choice). */
@@ -62,6 +70,7 @@ export type Deck = {
 
 /** What the app holds before any deck is loaded. */
 export const EMPTY_DECK: Deck = {
+  name: "",
   count: 1,
   repeat: true,
   spread: 1,
@@ -71,6 +80,7 @@ export const EMPTY_DECK: Deck = {
   intro1: "",
   intro2: "",
   label: null,
+  luck: null,
   palette: {},
   back: null,
   file: null,
@@ -95,7 +105,7 @@ export function splitHeader(text: string): { head: string; dataStart: number } |
   return end < 0 ? null : { head: text.slice(0, Math.max(0, end - 1)), dataStart: end + DELIM.length - 1 };
 }
 
-/** The header's key=value lines; STEP and BACK may repeat. */
+/** The header's key=value lines (lines starting with "#" are comments); STEP and BACK may repeat. */
 export function parseFields(head: string): {
   fields: Record<string, string>;
   stepSpecs: string[];
@@ -106,7 +116,7 @@ export function parseFields(head: string): {
   const backRows: string[] = [];
   for (const line of head.split("\n")) {
     const eq = line.indexOf("=");
-    if (eq <= 0) continue;
+    if (eq <= 0 || line.startsWith("#")) continue;
     const key = line.slice(0, eq).trim();
     const value = line.slice(eq + 1).trim();
     if (key === "STEP") stepSpecs.push(value);
@@ -145,24 +155,32 @@ export function parseDeck(head: string, dataStart: number, file: string, size: n
   const back = parseBack(fields, backRows, color, fail);
 
   const defaultBg = color(fields.BG ?? "2E1065");
-  const steps: Step[] = [];
-  let recordSize = 0;
-  for (const spec of stepSpecs) {
-    const [kind, bytes, bg] = spec.split(":");
+  const steps: Step[] = stepSpecs.map((spec) => {
+    const [kind, bg] = spec.split(":");
     if (kind !== "art" && kind !== "text" && kind !== "die" && kind !== "number") fail(`bad STEP ${spec}`);
     if (kind === "art" && hexes.length === 0) fail("art STEP needs PAL");
-    if (kind === "text" && !(Number(bytes) >= 1)) fail("text STEP needs a size");
+    return { kind: kind as StepKind, bg: bg === undefined ? defaultBg : color(bg) };
+  });
 
-    const stepSize = kind === "art" ? ART_BYTES : kind === "text" ? Number(bytes) : 0;
-    steps.push({ kind: kind as StepKind, size: stepSize, offset: recordSize, bg: bg === undefined ? defaultBg : color(bg) });
-    recordSize += stepSize;
-  }
+  const written = steps.filter(hasScreenText).length;
+  const recordSize = written > 0 ? Number(fields.RECORD) : 0;
+  if (written > 0 && !(Number.isInteger(recordSize) && recordSize >= 1)) fail(`bad RECORD ${fields.RECORD ?? "(missing)"}`);
 
   const expected = dataStart + count * recordSize;
   if (recordSize > 0 && size !== expected) fail(`size ${size}, expected ${expected}`);
 
+  let luck: number[] | null = null;
+  if (fields.LUCK !== undefined) {
+    try {
+      luck = parseLuck(fields.LUCK, count);
+    } catch (err) {
+      fail(err instanceof Error ? err.message : String(err));
+    }
+  }
+
   const spread = Number(fields.SPREAD);
   return {
+    name: fields.NAME || "",
     count,
     repeat: fields.REPEAT === "1",
     spread: spread >= 1 ? spread : DEFAULT_SPREAD,
@@ -172,6 +190,7 @@ export function parseDeck(head: string, dataStart: number, file: string, size: n
     intro1: fields.INTRO1 ?? "",
     intro2: fields.INTRO2 ?? "PRESS START",
     label: fields.LABEL ?? null,
+    luck,
     palette,
     back,
     file,
@@ -215,15 +234,64 @@ function parseBack(
   };
 }
 
-/** Cuts an item's record into its steps. */
-export function decodeRecord(deck: Deck, record: string): Part[] {
-  return deck.steps.map((step) => {
-    const bytes = record.slice(step.offset, step.offset + step.size);
-    if (step.kind === "text") return bytes.trim();
-    if (step.kind !== "art") return null;
+/** The text of an item's screens: comments dropped, split at blank lines, each trimmed. */
+export function splitScreens(record: string): string[] {
+  const body = record
+    .split("\n")
+    .filter((line) => !line.startsWith("#"))
+    .join("\n");
+  return body
+    .split(SCREEN_BREAK)
+    .map((screen) =>
+      screen
+        .split("\n")
+        .map((line) => line.trim())
+        .join("\n")
+        .trim(),
+    )
+    .filter((screen) => screen !== "");
+}
 
-    const grid: string[] = [];
-    for (let y = 0; y < SCREEN_H; y++) grid.push(bytes.slice(y * SCREEN_W, (y + 1) * SCREEN_W));
+/**
+ * Picks one of the variants a line may offer: "TWO|DUCK" shows either one, by chance. `random` gives a number in [0, 1).
+ * Each line chooses on its own, so a line without a "|" always stays as written.
+ */
+export function chooseVariants(text: string, random: () => number = Math.random): string {
+  return text
+    .split("\n")
+    .map((line) => {
+      if (!line.includes("|")) return line;
+      const options = line.split("|").map((option) => option.trim());
+      return options[Math.floor(random() * options.length)];
+    })
+    .join("\n");
+}
+
+/**
+ * Turns an item's text into what its steps show, or throws "<file>: item <n>: <what is wrong>".
+ * Art becomes XPM2; text is the lines as written, with one variant chosen for every line that offers some; steps without a
+ * screen get null.
+ */
+export function decodeRecord(deck: Deck, record: string, item: number, random: () => number = Math.random): Part[] {
+  const fail = (why: string): never => {
+    throw new Error(`${deck.file}: item ${item}: ${why}`);
+  };
+
+  const screens = splitScreens(record);
+  const wanted = deck.steps.filter(hasScreenText).length;
+  if (screens.length !== wanted) fail(`${screens.length} screens, the header's STEPs need ${wanted}`);
+
+  let next = 0;
+  return deck.steps.map((step) => {
+    if (!hasScreenText(step)) return null;
+    const screen = screens[next++];
+    if (step.kind === "text") return chooseVariants(screen, random);
+
+    const grid = screen.split("\n");
+    if (grid.length !== SCREEN_H || grid.some((row) => row.length !== SCREEN_W))
+      fail(`art must be ${SCREEN_H} lines of ${SCREEN_W} characters`);
+    const stray = [...grid.join("")].find((c) => !(c in deck.palette));
+    if (stray !== undefined) fail(`art uses "${stray}", not in PAL`);
     return generateXpm2({ palette: deck.palette, grid });
   });
 }

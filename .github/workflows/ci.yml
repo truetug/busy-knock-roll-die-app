@@ -33,8 +33,38 @@ jobs:
 
       - run: pnpm build
 
-  decks:
-    name: Deck tooling
+      - name: Randomizer passes its Monte Carlo test (fixed seed)
+        run: pnpm monte-carlo --items 20 --trials 100000 --seed 1
+
+      - name: The dial's nudge follows its formula (fixed seed)
+        run: pnpm monte-carlo --items 20 --trials 100000 --seed 1 --luck "2*10,1*5,0*5"
+
+  generated:
+    name: Generated files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Pictures, texts, deck list and sounds are up to date
+        run: |
+          pnpm decks
+          pnpm sounds
+          git diff --exit-code -- assets src
+
+      - name: Deck files are valid
+        run: pnpm check-deck src/deck-*.txt
+
+  anim:
+    name: Animation tooling
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -50,9 +80,3 @@ jobs:
       - run: ruff check tools
 
       - run: ruff format --check tools
-
-      - name: Deck files are up to date
-        run: |
-          python tools/make_deck.py
-          python tools/make_sounds.py
-          git diff --exit-code -- src

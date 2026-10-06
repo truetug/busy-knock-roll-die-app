@@ -16,11 +16,6 @@
     "moduleDetection": "force",
     "noEmit": true,
 
-    /* Paths */
-    "paths": {
-      "@shared/*": ["./shared/*"]
-    },
-
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
@@ -29,6 +24,6 @@
     "noFallthroughCasesInSwitch": true
   },
   /* The app, and the platform it builds against. */
-  "include": ["./src", "./shared", "./env.d.ts"],
+  "include": ["./src", "./env.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

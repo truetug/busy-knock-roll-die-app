@@ -9,6 +9,7 @@ import {
   DOTS_SPACING,
   DOTS_Y,
   ERROR_RED,
+  GAME_SPREAD_MIN,
   GOLD,
   REVEAL_STEPS,
   SCREEN_H,
@@ -19,8 +20,9 @@ import {
   WHITE,
 } from "../config.ts";
 import type { Step } from "../deck/format.ts";
+import { PULL_LIMIT, pull } from "../random/draw.ts";
 import { s } from "../state.ts";
-import { lerp, wrapWords } from "../util.ts";
+import { colorDistance, lerp, mixColor, wrapWords } from "../util.ts";
 import { backFor } from "./backs.ts";
 import { background, bitmap, type Elem, rect, text } from "./elements.ts";
 
@@ -45,6 +47,11 @@ export function frame(): Elem[] {
 // ── Intro and error ─────────────────────────────────────────────────────────
 
 function introScreen(): Elem[] {
+  if (s.auto) {
+    // Between games: when each game has a deck of its own, the one that comes next is named.
+    const first = s.random && s.upNext !== "" ? s.upNext.slice(0, SMALL_LINE) : "NEXT GAME";
+    return [text("intro-1", MID_X, 4, first, "small", WHITE), text("intro-2", MID_X, 12, `IN ${s.countdown}`, "small", GOLD)];
+  }
   return [text("intro-1", MID_X, 4, s.deck.intro1, "small", WHITE), text("intro-2", MID_X, 12, s.deck.intro2, "small", GOLD)];
 }
 
@@ -67,16 +74,29 @@ function errorScreen(): Elem[] {
 function wheelScreen(): Elem[] {
   const back = backFor(s.deck, s.back);
   const blinkOn = s.phase === "ready" && Math.floor(s.blink / 2) % 2 === 0;
-  const border = s.braking || blinkOn ? WHITE : GOLD;
+  // Spinning, the middle card is just one of the cards; it is lit as the wheel comes to rest (and while waiting for Start).
+  const resting = s.wheel.clip.startsWith("stop-");
+  const border =
+    s.phase === "spin" ? (resting ? GOLD : s.braking ? WHITE : mixColor(back.edge, glow(back.edge), nudged())) : blinkOn ? WHITE : GOLD;
 
   const elements = [rect("frame", MID_X, WHEEL_Y, CENTER_W, CENTER_H, back.fill, { radius: 2, border, z: 2 })];
   if (back.xpm) elements.push(bitmap("back", MID_X, WHEEL_Y, back.xpm, "center", 3));
   return elements;
 }
 
+/** What the frame warms to: gold, or white where the card's own edge is gold already. */
+function glow(edge: string): string {
+  return colorDistance(edge, GOLD) < 150 ? WHITE : GOLD;
+}
+
+/** How far the dial has nudged the draw so far, 0 to 1: the frame warms to gold as it does. */
+function nudged(): number {
+  return s.turns === 0 ? 0 : (1 - pull(s.turns)) / (1 - PULL_LIMIT);
+}
+
 /** Pips along the bottom: one per result in this reading, filled once drawn. */
 function progressDots(): Elem[] {
-  if (s.spreadTarget <= 1) return [];
+  if (s.spreadTarget <= 1 || s.spreadTarget >= GAME_SPREAD_MIN) return [];
 
   const left = MID_X - ((s.spreadTarget - 1) * DOTS_SPACING) / 2;
   return Array.from({ length: s.spreadTarget }, (_, i) =>
@@ -85,6 +105,14 @@ function progressDots(): Elem[] {
 }
 
 // ── The result ──────────────────────────────────────────────────────────────
+
+/** A text screen as shown: the lines as written, any longer than the screen wrapped, at most two (the rest is cut). */
+export function textLines(text: string): string[] {
+  return text
+    .split("\n")
+    .flatMap((line) => wrapWords(line, SMALL_LINE))
+    .slice(0, 2);
+}
 
 /** Pip offsets from a die face's centre, per face value. */
 // biome-ignore format: one face per line reads as the die
@@ -130,7 +158,7 @@ function stepScreen(step: Step, part: string | null, value: number): Elem[] {
       return [background("art-bg", step.bg), bitmap("art", 0, 0, part ?? "", "top_left", 1)];
 
     case "text": {
-      const lines = wrapWords(part ?? "", SMALL_LINE);
+      const lines = textLines(part ?? "");
       const rows = lines.map((line, i) => text(`ans-${i}`, MID_X, lines.length === 1 ? 8 : 4 + i * 8, line, "small", WHITE, "center", 1));
       return [background("reveal-card", step.bg), ...rows];
     }

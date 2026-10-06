@@ -1,0 +1,1 @@
+{"name": "Directions", "order": 15, "bg": "12294A", "repeat": true, "spread": 1, "steps": ["art", "text:12294A"], "intro": ["WHICH WAY?", "PRESS START"], "back": {"ring": "E0B84C", "core": "12294A", "fill": "12294A", "edge": "E0B84C"}, "description": "the eight directions of the compass, with an arrow"}

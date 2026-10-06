@@ -1,0 +1,1 @@
+{"name": "Cards", "order": 8, "bg": "0F3D2E", "repeat": false, "spread": 5, "luck": "0*4,1*4,2*4,3*4,4*4,5*4,6*4,7*4,8*4,9*4,10*4,11*4,12*4", "steps": ["art", "text:0F3D2E"], "intro": ["DEAL", "PRESS START"], "back": {"ring": "F8F8F2", "core": "C1121F", "fill": "0F3D2E", "edge": "F8F8F2"}, "description": "the 52 playing cards, a hand of five; the dial favours the higher ranks"}

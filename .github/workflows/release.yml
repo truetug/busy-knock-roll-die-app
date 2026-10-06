@@ -33,11 +33,15 @@ jobs:
             echo "::error::tag $GITHUB_REF_NAME, manifest $version"
             exit 1
           fi
+          echo "id=$id" >> "$GITHUB_OUTPUT"
           echo "archive=$id-$version.tgz" >> "$GITHUB_OUTPUT"
 
       - run: pnpm check
 
       - run: pnpm build --tgz
+
+      - name: Name the archive after the version
+        run: cp "dist/${{ steps.manifest.outputs.id }}.tgz" "dist/${{ steps.manifest.outputs.archive }}"
 
       - name: Publish the release
         env:

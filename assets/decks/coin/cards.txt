@@ -1,0 +1,3 @@
+# The coin: two sides; a result may repeat.
+HEADS | HEADS
+TAILS | TAILS

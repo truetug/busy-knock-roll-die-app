@@ -1,148 +1,297 @@
 {
   "fps": 60,
   "levels": 6,
-  "variants": [
-    {
-      "file": "strip-0.anim",
-      "fill": "#2E1065FF",
-      "edge": "#C4B5FDFF"
-    },
-    {
-      "file": "strip-1.anim",
-      "fill": "#2E1065FF",
-      "edge": "#FFD24DFF"
-    },
-    {
-      "file": "strip-2.anim",
-      "fill": "#000000FF",
-      "edge": "#8B2CFFFF"
-    },
-    {
-      "file": "strip-3.anim",
-      "fill": "#0B1B4DFF",
-      "edge": "#5B7BD5FF"
-    }
-  ],
   "clips": {
     "rest": {
       "frames": 1,
       "loop": true,
-      "click": null
+      "clicks": []
     },
     "hold-1": {
       "frames": 30,
       "loop": true,
-      "click": 15
+      "clicks": [
+        15
+      ]
     },
     "launch-1": {
-      "frames": 60,
+      "frames": 150,
       "loop": false,
-      "click": 43
+      "clicks": [
+        43,
+        75,
+        105,
+        135
+      ]
     },
     "hold-2": {
       "frames": 20,
       "loop": true,
-      "click": 10
+      "clicks": [
+        10
+      ]
     },
     "launch-2": {
-      "frames": 40,
+      "frames": 120,
       "loop": false,
-      "click": 29
+      "clicks": [
+        29,
+        50,
+        70,
+        90,
+        110
+      ]
     },
     "hold-3": {
       "frames": 15,
       "loop": true,
-      "click": 8
+      "clicks": [
+        8
+      ]
     },
     "launch-3": {
-      "frames": 30,
+      "frames": 105,
       "loop": false,
-      "click": 22
+      "clicks": [
+        22,
+        38,
+        53,
+        68,
+        83,
+        98
+      ]
     },
     "hold-4": {
       "frames": 12,
       "loop": true,
-      "click": 6
+      "clicks": [
+        6
+      ]
     },
     "launch-4": {
-      "frames": 24,
+      "frames": 96,
       "loop": false,
-      "click": 17
+      "clicks": [
+        17,
+        30,
+        42,
+        54,
+        66,
+        78,
+        90
+      ]
     },
     "hold-5": {
       "frames": 10,
       "loop": true,
-      "click": 5
+      "clicks": [
+        5
+      ]
     },
     "launch-5": {
-      "frames": 20,
+      "frames": 90,
       "loop": false,
-      "click": 15
+      "clicks": [
+        15,
+        25,
+        35,
+        45,
+        55,
+        65,
+        75,
+        85
+      ]
     },
     "hold-6": {
       "frames": 8,
       "loop": true,
-      "click": 4
+      "clicks": [
+        4
+      ]
     },
     "launch-6": {
-      "frames": 16,
+      "frames": 88,
       "loop": false,
-      "click": 12
+      "clicks": [
+        12,
+        20,
+        28,
+        36,
+        44,
+        52,
+        60,
+        68,
+        76,
+        84
+      ]
     },
     "up-1": {
-      "frames": 24,
+      "frames": 104,
       "loop": false,
-      "click": 14
+      "clicks": [
+        14,
+        34,
+        54,
+        74,
+        94
+      ]
     },
     "down-2": {
-      "frames": 24,
+      "frames": 111,
       "loop": false,
-      "click": 10
+      "clicks": [
+        10,
+        39,
+        68,
+        97
+      ]
     },
     "up-2": {
-      "frames": 17,
+      "frames": 91,
       "loop": false,
-      "click": 10
+      "clicks": [
+        10,
+        25,
+        40,
+        54,
+        69,
+        84
+      ]
     },
     "down-3": {
-      "frames": 17,
+      "frames": 95,
       "loop": false,
-      "click": 7
+      "clicks": [
+        7,
+        27,
+        47,
+        66,
+        86
+      ]
     },
     "up-3": {
-      "frames": 13,
+      "frames": 82,
       "loop": false,
-      "click": 7
+      "clicks": [
+        7,
+        19,
+        31,
+        42,
+        54,
+        65,
+        77
+      ]
     },
     "down-4": {
-      "frames": 13,
+      "frames": 85,
       "loop": false,
-      "click": 6
+      "clicks": [
+        6,
+        21,
+        35,
+        49,
+        64,
+        78
+      ]
     },
     "up-4": {
-      "frames": 11,
+      "frames": 82,
       "loop": false,
-      "click": 6
+      "clicks": [
+        6,
+        17,
+        27,
+        37,
+        47,
+        57,
+        67,
+        77
+      ]
     },
     "down-5": {
-      "frames": 11,
+      "frames": 81,
       "loop": false,
-      "click": 5
+      "clicks": [
+        5,
+        17,
+        29,
+        41,
+        52,
+        64,
+        76
+      ]
     },
     "up-5": {
-      "frames": 9,
+      "frames": 83,
       "loop": false,
-      "click": 5
+      "clicks": [
+        5,
+        14,
+        22,
+        30,
+        38,
+        46,
+        55,
+        63,
+        71,
+        79
+      ]
     },
     "down-6": {
-      "frames": 9,
+      "frames": 76,
       "loop": false,
-      "click": 4
+      "clicks": [
+        4,
+        14,
+        24,
+        33,
+        43,
+        53,
+        62,
+        72
+      ]
     },
-    "stop": {
+    "stop-1": {
       "frames": 72,
       "loop": false,
-      "click": 18
+      "clicks": [
+        18
+      ]
+    },
+    "stop-2": {
+      "frames": 52,
+      "loop": false,
+      "clicks": [
+        12
+      ]
+    },
+    "stop-3": {
+      "frames": 42,
+      "loop": false,
+      "clicks": [
+        9
+      ]
+    },
+    "stop-4": {
+      "frames": 36,
+      "loop": false,
+      "clicks": [
+        8
+      ]
+    },
+    "stop-5": {
+      "frames": 32,
+      "loop": false,
+      "clicks": [
+        6
+      ]
+    },
+    "stop-6": {
+      "frames": 28,
+      "loop": false,
+      "clicks": [
+        5
+      ]
     }
   }
 }

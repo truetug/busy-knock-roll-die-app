@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { enqueue, pendingOf } from "../src/display.ts";
+import { enqueue, pendingOf } from "../src/queue.ts";
 import { playClicks, playPending, soundPath } from "../src/sound.ts";
 import { s } from "../src/state.ts";
 import { freshState, parseShipped } from "./helpers.ts";
 
-vi.mock("../src/display.ts", () => ({ enqueue: vi.fn(), pendingOf: vi.fn(() => 0) }));
+vi.mock("../src/queue.ts", () => ({ enqueue: vi.fn(), pendingOf: vi.fn(() => 0) }));
 
 describe("soundPath", () => {
   it("points into the app's sounds folder, one file per event", () => {

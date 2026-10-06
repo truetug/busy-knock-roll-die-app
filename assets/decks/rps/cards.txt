@@ -1,0 +1,4 @@
+# Rock, paper, scissors: three items, a result may repeat.
+ROCK | ROCK
+PAPER | PAPER
+SCISSORS | SCISSORS

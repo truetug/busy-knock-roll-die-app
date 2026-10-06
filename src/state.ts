@@ -1,18 +1,25 @@
 // The app's whole mutable state, in one place. Game logic writes it, views read it.
 
-import { DEFAULT_COLOR, type SoundEvent } from "./config.ts";
+import { DEFAULT_COLOR, GAME_SPREAD_MIN, SEND_LATENCY_MS, type SoundEvent } from "./config.ts";
 import { type Deck, EMPTY_DECK, type Part } from "./deck/format.ts";
-import { shuffled } from "./util.ts";
+import { type Fate, fullPool } from "./random/draw.ts";
 import type { BackChoice } from "./view/backs.ts";
 
 /**
  * intro: the start screen; ready: wheel waiting for a spin; spin: wheel turning;
  * reveal: the picked item; error: the deck file is unusable.
  */
-export type Phase = "intro" | "ready" | "spin" | "reveal" | "error";
+type Phase = "intro" | "ready" | "spin" | "reveal" | "error";
 
 /** A clip for the bar to play on the wheel's strip. */
-export type StripCommand = { name: string; loop: boolean; awaitEnd: boolean };
+export type StripCommand = {
+  name: string;
+  loop: boolean;
+  /** Start only when the clip now playing (or its loop round) has ended. */
+  awaitEnd: boolean;
+  /** The element has already finished (and a finished one ignores new clips): clear it and draw a new one. */
+  fresh: boolean;
+};
 
 export const s = {
   phase: "intro" as Phase,
@@ -25,12 +32,24 @@ export const s = {
   spreadSetting: null as number | null,
   back: "auto" as BackChoice,
   soundOn: true,
+  /** Auto play: no start screen, the game spins and shows its results by itself, game after game. */
+  auto: false,
+  /** Auto play: every game from a deck of its own, chosen at random. */
+  random: false,
+  /** Auto play: the name of the deck chosen for the next game, once it is loaded (the countdown shows it). */
+  upNext: "",
+  /** Auto play: the ids of the decks there are to choose from. */
+  deckIds: [] as string[],
 
   deck: EMPTY_DECK as Deck,
 
   // the current reading
   /** Items still to pick from; drawn ones leave it unless the deck repeats. */
   pool: [] as number[],
+  /** The hidden numbers drawn when the wheel was launched; the card is worked out from them when it stops. */
+  fate: null as Fate | null,
+  /** Turns of the dial the wheel has reacted to since the launch: each nudges the card a little (random/draw.ts). */
+  turns: 0,
   /** Results this reading shows, and how many it has shown. */
   spreadTarget: 1,
   drawn: 0,
@@ -49,8 +68,14 @@ export const s = {
     /** Stay at this level until then (ms), then slow down: the wheel's friction. */
     holdUntil: 0,
   },
+  /** How long (ms) a clip takes to reach the bar once decided on: measured, starts at the usual. */
+  latency: SEND_LATENCY_MS,
   /** Start is held as the brake: the wheel slows without dwelling at each level. */
   braking: false,
+  /** Auto play: when (ms) the next automatic step happens; 0 when none is waiting. */
+  autoAt: 0,
+  /** Auto play: the seconds shown on the "next game" screen. */
+  countdown: 0,
   /** Counts ticks while waiting, to blink the frame. */
   blink: 0,
   /** Clips the controller should send to the bar, in order; filled by the game, emptied by the controller. */
@@ -81,10 +106,12 @@ export function resetWheel(): void {
   s.commands = [];
 }
 
-/** A fresh reading: full reshuffled pool, nothing drawn yet. */
+/** A fresh reading: the full pool, nothing drawn yet. */
 export function resetReading(): void {
-  s.pool = shuffled(s.deck.count);
-  const wanted = s.spreadSetting ?? s.deck.spread;
+  s.pool = fullPool(s.deck.count);
+  s.fate = null;
+  s.turns = 0;
+  const wanted = s.deck.spread >= GAME_SPREAD_MIN ? s.deck.spread : (s.spreadSetting ?? s.deck.spread);
   s.spreadTarget = s.deck.repeat ? wanted : Math.min(wanted, s.deck.count);
   s.drawn = 0;
 }

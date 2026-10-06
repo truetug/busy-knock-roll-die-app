@@ -1,0 +1,1 @@
+{"name": "Tarot count", "order": 5, "bg": "1E1B4B", "repeat": true, "spread": 3, "steps": ["number", "text"], "intro": ["CARD POSITION", "PRESS START"], "back": {"ring": "D4AF37", "core": "8B7FD6", "fill": "1E1B4B", "edge": "D4AF37"}, "description": "for a physical tarot deck: a number, then \"count N cards from the top\""}

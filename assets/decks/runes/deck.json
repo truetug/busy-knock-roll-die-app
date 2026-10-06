@@ -1,0 +1,1 @@
+{"name": "Runes", "order": 6, "bg": "1E1B4B", "repeat": false, "spread": 3, "steps": ["art", "text:1E1B4B"], "intro": ["ASK ALOUD,", "PRESS START"], "back": {"ring": "E0B84C", "core": "8B7FD6", "fill": "1E1B4B", "edge": "E0B84C"}, "description": "the 24 runes of the Elder Futhark: the sign, then its name and meaning"}

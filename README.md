@@ -12,11 +12,17 @@ Ask a question out loud, spin the wheel, press Start.
 
 1. **Start screen** – the deck's own phrase ("Ask aloud, press Start"). Start continues.
 2. **The wheel** – face-down cards sliding past a framed one in the middle. Turn the dial to launch the wheel, or press Start for a
-   launch of random strength; more turns of the dial while it spins send it faster still. It spins, slows down one step at a time and
-   settles on a card. Press Start while it spins to brake sooner. The cards move at 60 frames a second, played by the bar itself.
+   launch of random strength; more turns of the dial while it spins send it faster still. One spin lasts at least 12 seconds and shows every card of the deck
+   at least once (tarot: about 15 seconds): it slows down step by step and settles on a card. Press Start while it spins to brake sooner. The cards move at 60 frames a second, played by the bar itself.
 3. **The result** – the card grows to fill the screen and shows what the deck says: art, text, a die face or a number. A result can
    have several steps (a tarot card, then its prediction); Start moves through them.
 4. After the last result of a reading the app returns to the start screen.
+
+**Auto play** (**Settings → Auto play**) is *Off*, *One game* or *Random game*. Both have no start screen: the app spins the wheel by
+itself, shows each screen of a result for three seconds, and after the last result of a game shows "next game in 5" and starts over -
+for ever. *One game* plays the chosen deck again and again; *Random game* takes another deck for every game (the countdown names it;
+the lotto and bingo, which are a whole game by themselves, are left out). Start skips a wait or brakes the wheel; Back quits.
+**Settings → Sound** turns every sound off, the wheel's clicks included.
 
 The wheel clicks for every card that passes the frame, so you hear its speed: dense clicks while it flies, ever further apart as it
 slows, and quickening again when you give it another turn of the dial. The wheel starting, settling, the result opening and moving
@@ -43,13 +49,31 @@ That is 88 KB per second, so keep effects short.
 
 ## Decks
 
+Two decks are in Russian: **Fairy tales** and **Lotto**. The others are in English.
+
+<!-- decks:start -->
 | Deck | What you get | Results per reading |
 | --- | --- | --- |
 | Tarot | 78 cards: the art, then a short prediction | 3 |
-| Neon | the same 78 cards in neon gradients | 3 |
-| 8 ball | one of 20 classic answers | 1 |
-| d6 | a die face with pips | 1 |
-| d4, d8, d10, d12, d20, d100 | a number | 1 |
+| Neon | the same 78 cards in neon colours | 3 |
+| Cosmic | the same 78 cards as a space story: engines, capsules, beams, planets | 3 |
+| Fairy tales | the same 78 cards from Russian fairy tales, with Russian text | 3 |
+| Tarot count | for a physical tarot deck: a number, then "count N cards from the top" | 3 |
+| Runes | the 24 runes of the Elder Futhark: the sign, then its name and meaning | 3 |
+| I Ching | the 64 hexagrams, drawn line by line, with their names | 1 |
+| Cards | the 52 playing cards, a hand of five; the dial favours the higher ranks | 5 |
+| Dominoes | the 28 bones of a double-six set, a hand of seven; the dial favours the bigger sums | 7 |
+| Lotto | Russian lotto, with Russian text: the 90 barrels without repeats, each with its folk name (a number, then Start for the name) | 90 |
+| Bingo | the 75 balls: a letter, then the number | 75 |
+| Roulette | European wheel: the 37 pockets, each as a field in its colour with a big number; Start for colour, parity and half | 1 |
+| Coin | heads or tails | 1 |
+| RPS | rock, paper, scissors | 1 |
+| Directions | the eight directions of the compass, with an arrow | 1 |
+| What to eat | a dish for the day | 1 |
+| 8 ball | one of 20 classic answers; the dial favours the positive ones | 1 |
+| 2d6 | two dice, the 36 throws: their sum comes up as it does with real dice | 1 |
+| d4 ... d100 | a die face (d6) or a big number; the dial favours the higher | 1 |
+<!-- decks:end -->
 
 Cards in a reading never repeat; dice and the ball can. **Settings → Results** overrides how many results a reading shows (1–5);
 the default, Auto, uses the deck's own number. **Settings → Card back** picks the picture on the wheel's cards (Diamond, Lattice,
@@ -69,22 +93,24 @@ Each [release](../../releases) carries the packaged app. To build and install fr
 
 ```sh
 pnpm install
-pnpm push 192.168.1.20 <api token>     # builds, then uploads dist/ to the bar over its HTTP API
+pnpm push 192.168.1.20 <api token>     # builds, then uploads dist/ to the bar over its HTTP API (no address: tools/bar.sh finds the bar)
 ```
 
 On the bar open **Apps → Knock Roll Die**.
 
 ## Development
 
-Needs Node 24 and pnpm (`corepack enable`). Python 3 with Pillow is needed only to regenerate the deck files.
+Needs Node 24 and pnpm (`corepack enable`). Python 3 with Pillow is needed only to re-render the wheel's animations (`tools/make_anim.py`).
 
 ```sh
 pnpm install
 pnpm check        # typecheck, lint and tests
 pnpm test         # tests only
 pnpm format       # fix formatting and import order
-pnpm build        # dist/<app id>/
-pnpm decks        # regenerate src/deck-*.txt from tools/ (needs Pillow: pip install -r tools/requirements.txt)
+pnpm build        # dist/<app id>/ (it builds the deck files from assets/ first)
+pnpm decks        # only the deck files and the deck list: from assets/, plain Node, no extra setup
+make push         # build and upload to the bar: tools/bar.sh finds it on the network or opens a tunnel through the jump host
+make              # build and pack: builds/<app id>-<version>-<commit>-<time>.tgz (`make list` shows them)
 ```
 
 The code is layered; each layer only uses the ones above it in this list:
@@ -108,16 +134,24 @@ src/
 - `game.ts` returns an *effect* (redraw, load the record, exit...) and `main.ts` carries it out, so the rules are testable without a device.
 - The runtime is a tiny JS engine on the bar: a small heap, and every draw is an HTTP round trip to the bar itself - about 90 ms
   (measured: 11 frames a second for one element, 7 for the old wheel screen). So the moving cards are not drawn by the script:
-  they are pre-rendered clips (`src/animations/strip-*.anim`) that the bar plays at 60 fps, and `wheel.ts` only chooses the next
-  clip. Clips join without a seam (each moves the strip by exactly one card), the bar switches at the end of a clip or loop round,
-  and sending the same animation element again restarts it - so `display.ts` sends it only when the clip changes. See the comments in `display.ts` and `main.ts` for the pitfalls found the hard way.
+  they are pre-rendered clips (`src/animations/strip.anim`) that the bar plays at 60 fps, and `wheel.ts` only chooses the next
+  clip. Clips join without a seam (each starts and ends on a card boundary) and the bar switches at the end of a clip or loop round.
+  Two quirks measured on the bar shape the design: sending the same animation element again restarts it, so `display.ts` sends it
+  only when the clip changes; and a clip that is not a loop is finished for good once it ends - a clip sent afterwards does not play -
+  so every ramp carries a "tail" of constant-speed motion in which its follow-up is sent in time (a late one is sent over a fresh element). See the comments in `display.ts` and `main.ts` for the pitfalls found the hard way.
 - `tools/make_anim.py` renders the wheel's clips with the bar's own `.anim` encoder (from the firmware checkout - see the script's
   docstring); its output, `src/animations/` and `src/clips.json`, is committed and CI does not regenerate it.
-- `tools/make_sounds.py` synthesises the sound effects (`src/sounds/*.snd`).
-- `tools/make_deck.py` builds the deck files from the artwork in `tools/*-src` and the texts in the script, and keeps the deck list in
+- `tools/make-sounds.ts` synthesises the sound effects (`src/sounds/*.snd`).
+- `pnpm deck <folder>` (`tools/build-deck.ts`) turns a folder of 72×16 PNGs into a deck file (see [docs/DECKS.md](docs/DECKS.md#making-decks));
+  `tools/make-decks.ts` rebuilds all of them (the folders in `assets/decks`) plus the 8 ball and the dice, and keeps the deck list in
   `src/appmeta/settings.json` in step.
 
 Identity, version and heap size live in `src/appmeta/manifest.json`; the settings screen in `src/appmeta/settings.json`.
+
+## Fairness
+
+The card is drawn once, when the wheel is launched, uniformly from what can still come up; the spin is only a show. How, and how
+to test it with Monte Carlo: [docs/RANDOMNESS.md](docs/RANDOMNESS.md).
 
 ## Work with us
 

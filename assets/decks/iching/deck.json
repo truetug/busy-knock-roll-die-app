@@ -1,0 +1,1 @@
+{"name": "I Ching", "order": 7, "bg": "1E1B4B", "repeat": true, "spread": 1, "steps": ["art", "text:1E1B4B"], "intro": ["ASK ALOUD,", "PRESS START"], "back": {"ring": "E0B84C", "core": "8B7FD6", "fill": "1E1B4B", "edge": "E0B84C"}, "description": "the 64 hexagrams, drawn line by line, with their names"}

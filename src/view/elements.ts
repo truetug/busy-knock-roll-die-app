@@ -1,7 +1,7 @@
 // Builders for display elements, so screens read as layout rather than as object literals.
 
-import type { device } from "@shared/device";
 import { SCREEN_H, SCREEN_W } from "../config.ts";
+import type { device } from "../device.ts";
 
 type Elements = NonNullable<Parameters<typeof device.DisplayDraw>[0]["elements"]>;
 /** One thing on the display, as device.DisplayDraw expects it. */

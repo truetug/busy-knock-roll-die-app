@@ -1,10 +1,13 @@
-// The wheel's pre-rendered clips: what src/clips.json (written by tools/make_anim.py) says about src/animations/strip-<n>.anim.
-// A clip moves the card strip by exactly one card, so they chain without a seam. Names:
-//   rest · hold-k (loops) · up-k (level k → k+1) · down-k (k → k-1) · launch-k (rest → k) · stop (1 → rest)
+// The wheel's pre-rendered clips: what src/clips.json (written by tools/make_anim.py) says about src/animations/strip.anim.
+// Every clip starts and ends on a card boundary, so they chain without a seam. Names:
+//   rest · hold-k (loops) · up-k (level k → k+1) · down-k (k → k-1) · launch-k (rest → k) · stop-k (k → rest)
+// The lowest level is 1; the wheel is at rest (level 0) before a launch-k and after a stop-k.
+// A clip that is not a loop is finished for good once it ends: the follow-up must reach the bar before then. The ramps
+// therefore end with a tail of constant-speed motion, in which that request is sent (see tools/make_anim.py).
 
 import data from "./clips.json";
 
-export type Clip = { frames: number; loop: boolean; click: number | null };
+type Clip = { frames: number; loop: boolean; clicks: number[] };
 
 export const CLIPS: Record<string, Clip> = data.clips;
 /** The fastest level; level 0 is at rest. */
@@ -15,10 +18,9 @@ export function clipMs(name: string): number {
   return (CLIPS[name].frames * 1000) / FPS;
 }
 
-/** When, from the start of the clip, a card crosses into the frame; null if none does. */
-export function clickMs(name: string): number | null {
-  const frame = CLIPS[name].click;
-  return frame === null ? null : (frame * 1000) / FPS;
+/** When, from the start of the clip, each card crosses into the frame (ms). */
+export function clickTimes(name: string): number[] {
+  return CLIPS[name].clicks.map((frame) => (frame * 1000) / FPS);
 }
 
 /** The level the wheel is at when the clip has played. */
@@ -34,12 +36,6 @@ export function endLevel(name: string): number {
     case "down":
       return n - 1;
     default:
-      return 0; // rest, stop
+      return 0; // rest, stop-k
   }
-}
-
-/** The animation file whose cards look like the given card back; the default look if none does. */
-export function stripFile(fill: string, edge: string): string {
-  const match = data.variants.find((v) => v.fill === fill && v.edge === edge);
-  return (match ?? data.variants[0]).file;
 }

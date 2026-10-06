@@ -1,14 +1,14 @@
 // The settings described by appmeta/settings.json, read once at startup.
 
-import { device } from "@shared/device";
 import manifest from "./appmeta/manifest.json";
 import { DEFAULT_COLOR, DEFAULT_DECK } from "./config.ts";
+import { device } from "./device.ts";
 import { BACK_CHOICES, type BackChoice } from "./view/backs.ts";
 
 /** Must match "version" in appmeta/settings.json. */
 const VERSION = 1;
 
-export type AppSettings = {
+type AppSettings = {
   /** Deck id: the file resources/deck-<id>.txt. The list of valid ids is kept in step with the files by deck discovery. */
   deck: string;
   /** Results per reading; null: whatever the deck's header says. */
@@ -16,11 +16,20 @@ export type AppSettings = {
   /** Card back: "auto" lets the deck choose. */
   back: BackChoice;
   sound: boolean;
+  /** Auto play (see game.ts): off, the chosen deck again and again, or a deck of its own for each game. */
+  play: PlayMode;
   /** Always "#RRGGBBAA": the device stores it as "#RRGGBB" when opaque, but every draw call here needs the alpha. */
   color: string;
 };
 
-const DEFAULTS: AppSettings = { deck: DEFAULT_DECK, spread: null, back: "auto", sound: true, color: DEFAULT_COLOR };
+const DEFAULTS: AppSettings = { deck: DEFAULT_DECK, spread: null, back: "auto", sound: true, play: "off", color: DEFAULT_COLOR };
+
+type PlayMode = "off" | "one" | "random";
+const PLAY_MODES: readonly PlayMode[] = ["off", "one", "random"];
+
+function readPlay(values: Record<string, unknown>): PlayMode {
+  return PLAY_MODES.find((mode) => mode === values.play) ?? "off";
+}
 
 function readBack(values: Record<string, unknown>): BackChoice {
   return BACK_CHOICES.find((choice) => choice === values.back) ?? "auto";
@@ -65,6 +74,7 @@ export async function loadAppSettings(): Promise<AppSettings> {
       spread: readSpread(values),
       back: readBack(values),
       sound: values.sound !== false,
+      play: readPlay(values),
       color: readColor(values),
     };
   } catch (err) {
