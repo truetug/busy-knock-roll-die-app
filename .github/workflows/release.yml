@@ -1,19 +1,29 @@
-# Tag 0.1.0 → release with <id>-<version>.tgz attached.
-# The tag must match the version in src/appmeta/manifest.json.
+# Tag 0.1.0 → <id>-<version>.tgz attached to the release of that tag (the release is made if there is none, so a release made by hand
+# in the GitHub UI works too). The tag must match the version in src/appmeta/manifest.json.
+# Run by hand (Actions → Release → Run workflow) with a tag to attach the archive to a release that already exists.
 
 name: Release
 
 on:
   push:
     tags: ["[0-9]*.[0-9]*.[0-9]*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The tag of the release to attach the archive to
+        required: true
 
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag || github.ref }}
 
       - uses: pnpm/action-setup@v4
 
@@ -29,8 +39,8 @@ jobs:
         run: |
           version=$(jq -er .version src/appmeta/manifest.json)
           id=$(jq -er .id src/appmeta/manifest.json)
-          if [ "$version" != "$GITHUB_REF_NAME" ]; then
-            echo "::error::tag $GITHUB_REF_NAME, manifest $version"
+          if [ "$version" != "$TAG" ]; then
+            echo "::error::tag $TAG, manifest $version"
             exit 1
           fi
           echo "id=$id" >> "$GITHUB_OUTPUT"
@@ -47,7 +57,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" \
-            "dist/${{ steps.manifest.outputs.archive }}" \
-            --title "$GITHUB_REF_NAME" \
-            --generate-notes
+          archive="dist/${{ steps.manifest.outputs.archive }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$archive" --clobber
+          else
+            gh release create "$TAG" "$archive" --title "$TAG" --generate-notes
+          fi
