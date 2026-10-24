@@ -30,7 +30,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { buildDeck } from "./build-deck.ts";
-import { ASSETS, type Back, pack, screenText, syncReadme, syncSettings, writeDeck } from "./lib/deckkit.ts";
+import { ASSETS, type Back, pack, screenText, syncDeckFiles, syncReadme, syncSettings, writeDeck } from "./lib/deckkit.ts";
 
 const DECKS = join(ASSETS, "decks");
 const ANSWERS = readFileSync(join(ASSETS, "texts", "ball.txt"), "utf8")
@@ -76,6 +76,7 @@ for (const [sides, order] of Object.entries(DICE)) {
 }
 
 syncSettings();
+syncDeckFiles();
 syncReadme([
   ...infos,
   { name: "8 ball", order: 17, description: "one of 20 classic answers; the dial favours the positive ones", results: 1 },

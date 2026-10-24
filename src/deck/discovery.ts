@@ -38,6 +38,8 @@ async function discoverDecks(files: ResourceFile[]): Promise<DeckOption[]> {
 
 export async function syncDeckOptions(): Promise<void> {
   const current = await fetch(`${API}/storage/read?path=${encodeURIComponent(`/ext/user_assets/${APP}/${SCHEMA_FILE}`)}`);
+  // Since HTTP API 27.14 the app can neither read nor rewrite its files (see store.ts): the list stays the one the build wrote.
+  if (current.status === 403) return;
   const doc = (await current.json()) as SettingsDoc;
   const deck = doc.fields.deck;
 

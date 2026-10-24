@@ -18,7 +18,7 @@ ARCHIVE := builds/$(ID)-$(VERSION)-$(COMMIT)-$(STAMP).tgz
 all: build
 
 build:
-	pnpm build --tgz
+	pnpm build
 	mkdir -p builds
 	cp dist/$(ID).tgz $(ARCHIVE)
 	@echo "packed $(ARCHIVE) ($$(du -h $(ARCHIVE) | cut -f1))"

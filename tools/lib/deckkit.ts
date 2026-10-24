@@ -1,7 +1,7 @@
 // Shared pieces for building deck files (src/deck-<id>.txt): text packing, art quantising, the file writer.
 // See make-decks.ts for the format. Used by build-deck.ts (a deck from a folder of images) and make-decks.ts (everything).
 
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { PNG } from "pngjs";
 import { wrapWords } from "../../src/util.ts";
@@ -184,4 +184,27 @@ export function syncSettings(): void {
   const settings = JSON.parse(readFileSync(path, "utf8"));
   settings.fields.deck.options = found.map(({ value, label }) => ({ value, label }));
   writeFileSync(path, `${JSON.stringify(settings, null, 2)}\n`);
+}
+
+/** Writes src/deck/files.ts: the deck files with their sizes, and the tag they are read from when the bar keeps them from the app. */
+export function syncDeckFiles(): void {
+  const { version } = JSON.parse(readFileSync(join(SRC, "appmeta", "manifest.json"), "utf8"));
+  const files = readdirSync(SRC)
+    .filter((f) => /^deck-.+\.txt$/.test(f))
+    .sort()
+    .map((f) => `  { name: "${f}", size: ${statSync(join(SRC, f)).size} },`);
+  writeFileSync(
+    join(SRC, "deck", "files.ts"),
+    [
+      "// Written by tools/make-decks.ts (pnpm decks): the deck files and the release tag they are read from when the bar keeps them",
+      "// from the app (see store.ts).",
+      "",
+      `export const DECKS_REF = "${version}";`,
+      "",
+      "export const DECK_FILES = [",
+      ...files,
+      "];",
+      "",
+    ].join("\n"),
+  );
 }

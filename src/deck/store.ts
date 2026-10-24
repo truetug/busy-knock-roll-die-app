@@ -1,8 +1,9 @@
 // Reads decks from the device's storage over its own loopback HTTP API.
 
-import { APP, STORAGE_PATH_MAX } from "../config.ts";
+import { APP, REPO, STORAGE_PATH_MAX } from "../config.ts";
 import { rng } from "../random/seed.ts";
 import { utf8Length } from "../util.ts";
+import { DECK_FILES, DECKS_REF } from "./files.ts";
 import { type Deck, deckFileName, decodeRecord, type Part, parseDeck, splitHeader } from "./format.ts";
 
 const API = "http://127.0.0.1/api";
@@ -10,12 +11,23 @@ const RESOURCES_DIR = `/ext/user_assets/${APP}/resources`;
 // A deck file's header ends on a multiple of this many bytes (see docs/DECKS.md): a block never cuts a letter in two.
 const HEADER_CHUNK = 1024;
 const HEADER_CHUNKS_MAX = 4;
+// Since HTTP API 27.14 the firmware lets an app reach only a short list of endpoints, and storage is not on it: the app cannot read
+// its own resources/ (403). Until it can, the decks are read from the app's repository at this version's tag, which answers Range
+// requests the same way; that needs Wi-Fi. The files and their sizes are known at build time (files.ts).
+const REMOTE_DIR = `https://raw.githubusercontent.com/${REPO}/${DECKS_REF}/src`;
+let remote = false;
 
 export type ResourceFile = { name: string; size: number };
 
 /** The files in the resources folder, with sizes. */
 export async function listResources(): Promise<ResourceFile[]> {
+  if (remote) return DECK_FILES;
   const res = await fetch(`${API}/storage/list?path=${encodeURIComponent(RESOURCES_DIR)}`);
+  if (res.status === 403) {
+    remote = true;
+    console.warn(`${APP}: storage is closed to apps, reading the decks from ${REMOTE_DIR}`);
+    return DECK_FILES;
+  }
   const body = (await res.json()) as { list?: { type?: string; name: string; size?: number }[] };
   return (body.list ?? []).filter((e) => e.type !== "dir" && e.size !== undefined).map((e) => ({ name: e.name, size: e.size ?? 0 }));
 }
@@ -29,9 +41,9 @@ export function resourcePath(file: string): string {
 
 /** Bytes [start, end] of a resource file, by HTTP Range. */
 async function readRange(file: string, start: number, end: number): Promise<string> {
-  const res = await fetch(`${API}/storage/read?path=${encodeURIComponent(resourcePath(file))}`, {
-    headers: { Range: `bytes=${start}-${end}` },
-  });
+  const url = remote ? `${REMOTE_DIR}/${file}` : `${API}/storage/read?path=${encodeURIComponent(resourcePath(file))}`;
+  const res = await fetch(url, { headers: { Range: `bytes=${start}-${end}` } }).catch(() => null);
+  if (res === null) throw new Error(`${file}: ${remote ? "no internet" : "read failed"}`);
   if (!res.ok) throw new Error(`${file}: read failed (HTTP ${res.status})`);
   return res.text();
 }

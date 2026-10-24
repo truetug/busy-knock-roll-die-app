@@ -48,7 +48,7 @@ jobs:
 
       - run: pnpm check
 
-      - run: pnpm build --tgz
+      - run: pnpm build
 
       - name: Name the archive after the version
         run: cp "dist/${{ steps.manifest.outputs.id }}.tgz" "dist/${{ steps.manifest.outputs.archive }}"

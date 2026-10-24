@@ -2,6 +2,8 @@
 
 /** The id the app draws under; the device clears elements by it (it is the "id" in appmeta/manifest.json, which a test checks). */
 export const APP = "app.busy.knock_roll";
+/** The app's repository on GitHub: the decks are read from it while the bar keeps them from the app (see deck/store.ts). */
+export const REPO = "truetug/busy-knock-roll-die-app";
 
 // ── Defaults ────────────────────────────────────────────────────────────────
 /** The deck used when none is chosen, and the one the error screen falls back to. */
