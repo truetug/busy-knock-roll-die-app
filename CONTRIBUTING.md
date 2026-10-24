@@ -22,8 +22,9 @@ checkout for its animation encoder (`FIRMWARE_SCRIPTS=<firmware>/scripts`) and `
 - If you touched `src/random/`, run `pnpm monte-carlo` (see docs/RANDOMNESS.md).
 - If you edited a deck file by hand, run `pnpm check-deck src/deck-<id>.txt` (items keep their size: see docs/DECKS.md).
 - If you changed `tools/make-decks.ts`, `tools/make-generated-decks.ts` or anything in `assets/`, run `pnpm decks` and commit what it
-  regenerates (`assets/decks/*/cards.txt` and pictures of the generated decks, `src/appmeta/settings.json`, the README's table of decks).
-  The deck files themselves, `src/deck-*.txt`, are not committed: build and test make them. If you changed `tools/make-sounds.ts`, run
+  regenerates (`assets/decks/*/cards.txt` and pictures of the generated decks, `src/deck-*.txt`, `src/appmeta/settings.json`, the
+  README's table of decks). The deck files are committed because the app catalog builds with `busy-cli build` alone, without
+  `pnpm decks`: a deck that is not in git is not in the package. If you changed `tools/make-sounds.ts`, run
   `pnpm sounds` and commit `src/sounds/`. CI fails if any of it is out of date.
 - Add a line to `CHANGELOG.md` under "Unreleased".
 - Keep commits focused and say why in the message.
