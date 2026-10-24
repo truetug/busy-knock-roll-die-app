@@ -64,7 +64,7 @@ export async function loadAppSettings(): Promise<AppSettings> {
     const { version, values } = await device.AppsSettingsGet({ app_id: manifest.id });
 
     if (version !== VERSION) {
-      console.warn(`${manifest.id}: settings version ${version} != ${VERSION}, using defaults`);
+      console.log(`${manifest.id}: settings version ${version} != ${VERSION}, using defaults`);
       return DEFAULTS;
     }
 

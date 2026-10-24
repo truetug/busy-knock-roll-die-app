@@ -25,7 +25,7 @@ export async function listResources(): Promise<ResourceFile[]> {
   const res = await fetch(`${API}/storage/list?path=${encodeURIComponent(RESOURCES_DIR)}`);
   if (res.status === 403) {
     remote = true;
-    console.warn(`${APP}: storage is closed to apps, reading the decks from ${REMOTE_DIR}`);
+    console.log(`${APP}: storage is closed to apps, reading the decks from ${REMOTE_DIR}`);
     return DECK_FILES;
   }
   const body = (await res.json()) as { list?: { type?: string; name: string; size?: number }[] };
