@@ -15,6 +15,11 @@ export const STORAGE_PATH_MAX = 63;
 // ── Timing ──────────────────────────────────────────────────────────────────
 /** The controller's clock: the wheel's plan, the frame's blink and the reveal animation advance this often. */
 export const TICK_MS = 150;
+/**
+ * The waiting frame blinks this many ticks (30 s), then stays still: each blink is a draw request, and the bar serves requests
+ * one at a time, so a frame blinking forever takes a share of its time for good. A multiple of 4 ends on the bright frame.
+ */
+export const BLINK_TICKS = 200;
 /** Ticks the picked card takes to grow from its slot to the full screen. */
 export const REVEAL_STEPS = 4;
 

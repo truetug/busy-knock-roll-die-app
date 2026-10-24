@@ -5,6 +5,7 @@ import {
   AUTO_NEXT_MS,
   AUTO_RESULT_MS,
   AUTO_START_MS,
+  BLINK_TICKS,
   CLICK_LEAD_MS,
   ENCODER_LAUNCH_LEVEL,
   LAUNCH_LEVELS,
@@ -198,8 +199,10 @@ export function tick(now: number): Effect {
   if (automatic !== null) return automatic;
 
   if (s.phase === "ready") {
+    if (s.blink >= BLINK_TICKS) return "none";
     s.blink += 1;
-    return "soft";
+    // The last blink must reach the screen: "soft" is skipped while a frame is in flight.
+    return s.blink === BLINK_TICKS ? "now" : "soft";
   }
 
   if (s.phase === "reveal") {
