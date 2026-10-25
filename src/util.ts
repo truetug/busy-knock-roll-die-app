@@ -46,6 +46,12 @@ export function utf8Length(text: string): number {
 }
 
 /** Greedy word wrap into lines of at most `max` characters. */
+/** Capitals, as the bar's font draws text. Its JS engine is built without Unicode case conversion, so toUpperCase changes only
+ * Latin letters there: the Cyrillic ones are done here. */
+export function upper(text: string): string {
+  return text.toUpperCase().replace(/[а-яё]/g, (c) => (c === "ё" ? "Ё" : String.fromCharCode(c.charCodeAt(0) - 0x20)));
+}
+
 export function wrapWords(text: string, max: number): string[] {
   const lines: string[] = [];
   let line = "";

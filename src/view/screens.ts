@@ -22,7 +22,7 @@ import {
 import type { Step } from "../deck/format.ts";
 import { PULL_LIMIT, pull } from "../random/draw.ts";
 import { s } from "../state.ts";
-import { colorDistance, lerp, mixColor, wrapWords } from "../util.ts";
+import { colorDistance, lerp, mixColor, upper, wrapWords } from "../util.ts";
 import { backFor } from "./backs.ts";
 import { background, bitmap, type Elem, rect, text } from "./elements.ts";
 
@@ -49,7 +49,7 @@ export function frame(): Elem[] {
 function introScreen(): Elem[] {
   if (s.auto) {
     // Between games: when each game has a deck of its own, the one that comes next is named.
-    const first = s.random && s.upNext !== "" ? s.upNext.slice(0, SMALL_LINE) : "NEXT GAME";
+    const first = s.random && s.upNext !== "" ? upper(s.upNext).slice(0, SMALL_LINE) : "NEXT GAME";
     return [text("intro-1", MID_X, 4, first, "small", WHITE), text("intro-2", MID_X, 12, `IN ${s.countdown}`, "small", GOLD)];
   }
   return [text("intro-1", MID_X, 4, s.deck.intro1, "small", WHITE), text("intro-2", MID_X, 12, s.deck.intro2, "small", GOLD)];

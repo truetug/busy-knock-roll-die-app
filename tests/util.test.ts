@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { clamp, colorDistance, errorMessage, lerp, mixColor, utf8Length, wrapWords } from "../src/util.ts";
+import { clamp, colorDistance, errorMessage, lerp, mixColor, upper, utf8Length, wrapWords } from "../src/util.ts";
 
 describe("utf8Length", () => {
   it("counts bytes, not characters", () => {
@@ -61,5 +61,25 @@ describe("errorMessage", () => {
   it("reads Errors and anything else", () => {
     expect(errorMessage(new Error("boom"))).toBe("boom");
     expect(errorMessage("plain")).toBe("plain");
+  });
+});
+
+describe("upper", () => {
+  it("capitalises Latin and Cyrillic, ё included", () => {
+    expect(upper("Fairy tales")).toBe("FAIRY TALES");
+    expect(upper("Сказки, ёлка и Яга")).toBe("СКАЗКИ, ЁЛКА И ЯГА");
+  });
+
+  it("does not need the engine's Unicode case conversion", () => {
+    // The bar's toUpperCase: Latin letters only.
+    const native = String.prototype.toUpperCase;
+    String.prototype.toUpperCase = function (this: string) {
+      return this.replace(/[a-z]/g, (c) => native.call(c));
+    };
+    try {
+      expect(upper("Сказки ёлка")).toBe("СКАЗКИ ЁЛКА");
+    } finally {
+      String.prototype.toUpperCase = native;
+    }
   });
 });
