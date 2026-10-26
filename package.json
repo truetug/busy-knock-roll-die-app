@@ -24,14 +24,14 @@
     "node": ">=24 <26"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.15",
+    "@biomejs/biome": "2.6.2",
     "@busy-app/cli": "^0.6.0",
-    "@types/node": "^24.19.0",
+    "@types/node": "^26.6.5",
     "@types/pngjs": "^6.0.5",
     "pngjs": "^7.0.0",
     "typescript": "~7.0.2",
-    "vite": "8.1.4",
-    "vitest": "^5.0.3"
+    "vite": "8.3.5",
+    "vitest": "^5.0.5"
   },
   "dependencies": {
     "@busy-app/busy-lib": "^0.21.1"
