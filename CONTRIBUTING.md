@@ -10,7 +10,8 @@ pnpm install
 pnpm check      # typecheck, lint, tests - run before every push
 ```
 
-Node 24 is required (`.nvmrc`); the deck and sound tooling (`pnpm decks`, `pnpm deck`, `pnpm check-deck`) is plain TypeScript run by
+Node 24 is required (`.nvmrc`), not 26: the bar pads `Content-Length` with spaces, which HTTP allows, and Node 26 does not
+trim them, so `busy-cli` cannot talk to the bar. The deck and sound tooling (`pnpm decks`, `pnpm deck`, `pnpm check-deck`) is plain TypeScript run by
 Node. Python 3 with Pillow (`pip install -r tools/requirements.txt`) is needed only for the wheel's animations: changing its look or speeds means re-running `tools/make_anim.py`, which needs the BUSY Bar firmware
 checkout for its animation encoder (`FIRMWARE_SCRIPTS=<firmware>/scripts`) and `colorlog`; commit its output.
 

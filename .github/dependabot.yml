@@ -8,7 +8,7 @@ updates:
       dev-tools:
         patterns: ["*"]
     ignore:
-      # The types follow the Node major in .nvmrc and "engines" (24), not the newest Node.
+      # The types follow the Node major in .nvmrc and "engines" (24): Node 26 cannot talk to the bar (see CONTRIBUTING.md).
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
