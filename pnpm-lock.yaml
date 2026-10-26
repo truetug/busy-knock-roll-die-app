@@ -19,7 +19,7 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0(@types/node@24.19.2)
       '@types/node':
-        specifier: ^24.19.2
+        specifier: '>=24 <26'
         version: 24.19.2
       '@types/pngjs':
         specifier: ^6.0.5
