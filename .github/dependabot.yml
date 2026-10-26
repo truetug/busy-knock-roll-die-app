@@ -7,6 +7,10 @@ updates:
     groups:
       dev-tools:
         patterns: ["*"]
+    ignore:
+      # The types follow the Node major in .nvmrc and "engines" (24), not the newest Node.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
