@@ -2,6 +2,8 @@
 
 /** The id the app draws under; the device clears elements by it (it is the "id" in appmeta/manifest.json, which a test checks). */
 export const APP = "app.busy.knock_roll";
+/** The app's repository on GitHub: the decks are read from it while the bar keeps them from the app (see deck/store.ts). */
+export const REPO = "truetug/busy-knock-roll-die-app";
 
 // ── Defaults ────────────────────────────────────────────────────────────────
 /** The deck used when none is chosen, and the one the error screen falls back to. */
@@ -15,6 +17,11 @@ export const STORAGE_PATH_MAX = 63;
 // ── Timing ──────────────────────────────────────────────────────────────────
 /** The controller's clock: the wheel's plan, the frame's blink and the reveal animation advance this often. */
 export const TICK_MS = 150;
+/**
+ * The waiting frame blinks this many ticks (30 s), then stays still: each blink is a draw request, and the bar serves requests
+ * one at a time, so a frame blinking forever takes a share of its time for good. A multiple of 4 ends on the bright frame.
+ */
+export const BLINK_TICKS = 200;
 /** Ticks the picked card takes to grow from its slot to the full screen. */
 export const REVEAL_STEPS = 4;
 

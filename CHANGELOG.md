@@ -3,6 +3,17 @@
 All notable changes are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project
 follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Firmware with HTTP API 27.14 keeps storage from apps, so the app could not read its decks ("file not found"). It now reads them
+  from this repository at the version's tag (needs Wi-Fi) until the firmware lets an app read its own files.
+- The deck files are committed again: the app catalog builds with `busy-cli build` alone, and the package had no decks.
+- The waiting frame stops blinking after 30 s instead of sending a draw request every 300 ms for as long as the app is open.
+- Built with `@busy-app/cli` 0.6: the manifest has `api_version`, `main.ts` calls its entry point itself, `pnpm build` leaves both
+  `dist/<id>/` and the archive.
+
 ## [1.0.0]
 
 First public release.

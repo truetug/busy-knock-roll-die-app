@@ -102,7 +102,8 @@ pnpm check-deck src/deck-fairy.txt   # every item the right size, 16 lines of 72
 ```
 
 `pnpm decks` rebuilds every deck from `assets/`, and refreshes the deck list and the README's table; `pnpm build` and `pnpm test` do it first.
-The deck files `src/deck-*.txt` are not committed; CI fails if what `pnpm decks` writes into `assets/` and `src/appmeta/` differs from what is committed.
+The deck files `src/deck-*.txt` are committed too: the app catalog builds with `busy-cli build` alone, so a deck that is not in git is not
+in the package. CI fails if what `pnpm decks` writes into `assets/`, `src/deck-*.txt` and `src/appmeta/` differs from what is committed.
 
 ## 5. Try it on the bar
 

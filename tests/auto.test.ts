@@ -167,7 +167,7 @@ describe("auto play with a deck for each game", () => {
     s.countdown = 4;
     s.upNext = "Neon";
     const lines = frame().flatMap((e) => (e.type === "text" ? [e.text] : []));
-    expect(lines).toEqual(["Neon", "IN 4"]);
+    expect(lines).toEqual(["NEON", "IN 4"]);
   });
 });
 

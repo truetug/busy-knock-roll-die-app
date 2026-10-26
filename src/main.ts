@@ -152,8 +152,8 @@ async function init(): Promise<void> {
   syncDeckOptions().catch(report);
 }
 
-/** Entry point. The build turns this default export into a call: one function, no arguments. */
-export default function run(): void {
+/** Entry point: the bar runs this file, so it ends with the call. */
+function run(): void {
   unbindInput = listen("input", (event) => {
     if (event.key === "encoder") perform(onEncoder(event.delta, Date.now()));
     else if (event.key === "start" && event.action === "press") perform(onStart(Date.now()));
@@ -167,3 +167,5 @@ export default function run(): void {
 
   init().catch(showError);
 }
+
+run();

@@ -3,6 +3,7 @@
   "id": "app.busy.knock_roll",
   "name": "Knock Roll Die",
   "version": "1.0.0",
+  "api_version": "27.12.0",
   "description": "Tarot, magic 8 ball and dice. Ask, spin the wheel, press Start.",
   "author": "Sergey Trofimov",
   "heap_size_kib": 256,

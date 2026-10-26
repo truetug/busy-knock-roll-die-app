@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { ENCODER_LAUNCH_LEVEL, LAUNCH_LEVELS, REVEAL_STEPS, TICK_MS } from "../src/config.ts";
+import { BLINK_TICKS, ENCODER_LAUNCH_LEVEL, LAUNCH_LEVELS, REVEAL_STEPS, TICK_MS } from "../src/config.ts";
 import { type Effect, onBack, onEncoder, onStart, tick, toError } from "../src/game.ts";
 import { s } from "../src/state.ts";
 import { freshState, parseShipped } from "./helpers.ts";
@@ -51,6 +51,14 @@ describe("starting a reading", () => {
     onStart(0);
     expect(tick(0)).toBe("soft");
     expect(s.blink).toBe(1);
+  });
+
+  it("stops blinking after a while, on a frame that reaches the screen", () => {
+    onStart(0);
+    for (let i = 1; i < BLINK_TICKS; i++) expect(tick(0)).toBe("soft");
+    expect(tick(0)).toBe("now");
+    expect(tick(0)).toBe("none");
+    expect(s.blink).toBe(BLINK_TICKS);
   });
 });
 

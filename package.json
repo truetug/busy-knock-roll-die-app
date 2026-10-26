@@ -6,7 +6,7 @@
   "author": "Sergey Trofimov",
   "type": "module",
   "scripts": {
-    "build": "pnpm decks && busy-cli build",
+    "build": "pnpm decks && busy-cli build --emit both",
     "typecheck": "tsc -b",
     "lint": "biome ci .",
     "format": "biome check --write .",
@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
-    "@busy-app/cli": "^0.2.0",
+    "@busy-app/cli": "^0.6.0",
     "@types/node": "^24.19.0",
     "@types/pngjs": "^6.0.5",
     "pngjs": "^7.0.0",
