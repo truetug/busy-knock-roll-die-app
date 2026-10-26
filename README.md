@@ -100,7 +100,7 @@ On the bar open **Apps → Knock Roll Die**.
 
 ## Development
 
-Needs Node 24 and pnpm (`corepack enable`). Python 3 with Pillow is needed only to re-render the wheel's animations (`tools/make_anim.py`).
+Needs Node below 26 (see CONTRIBUTING.md) and pnpm (`corepack enable`). Python 3 with Pillow is needed only to re-render the wheel's animations (`tools/make_anim.py`).
 
 ```sh
 pnpm install

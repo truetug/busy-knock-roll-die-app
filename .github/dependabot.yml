@@ -7,6 +7,10 @@ updates:
     groups:
       dev-tools:
         patterns: ["*"]
+    ignore:
+      # The types follow "engines" (Node below 26): Node 26 cannot talk to the bar (see CONTRIBUTING.md).
+      - dependency-name: "@types/node"
+        versions: [">=26"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
