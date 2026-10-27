@@ -1,7 +1,7 @@
 // Written by tools/make-decks.ts (pnpm decks): the deck files and the release tag they are read from when the bar keeps them
 // from the app (see store.ts).
 
-export const DECKS_REF = "1.0.0";
+export const DECKS_REF = "1.1.0";
 
 export const DECK_FILES = [
   { name: "deck-2d6.txt", size: 44800 },
