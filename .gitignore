@@ -35,3 +35,8 @@ builds/
 
 # Where this machine finds the bar (tools/bar.sh)
 .bar.env
+
+# Landing build and private work plans
+website/dist/
+plans/
+.pytest_cache/

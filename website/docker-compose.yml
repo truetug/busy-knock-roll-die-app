@@ -1,0 +1,17 @@
+name: knock-roll-die-website
+services:
+  web:
+    image: ghcr.io/truetug/busy-knock-roll-die-app-website:latest
+    container_name: knock-roll-die-website
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - edge
+networks:
+  edge:
+    external: true
