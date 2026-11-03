@@ -24,7 +24,7 @@
     "node": ">=24 <26"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.2",
+    "@biomejs/biome": "2.6.4",
     "@busy-app/cli": "^0.6.0",
     "@types/node": ">=24 <26",
     "@types/pngjs": "^6.0.5",
