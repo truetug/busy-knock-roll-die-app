@@ -4,8 +4,8 @@ A deck is a single text file, `resources/deck-<id>.txt`: a **header**, then the 
 hand: screens are plain multi-line text with a blank line between them. The app reads the header when it starts and, when
 something is picked, only that item (by HTTP Range request), so decks can be large.
 
-The `<id>` is the file's name between `deck-` and `.txt` (letters, digits, `-`, `_`), at most 7 characters (with the app id
-`app.busy.knock_roll`): the bar's storage API refuses paths of 64 characters or more. The app lists every such file in
+The `<id>` is the file's name between `deck-` and `.txt` (letters, digits, `-`, `_`), at most 7 characters: the bar's storage API
+refuses paths of 64 characters or more, and with the app id `info.truetug.knock` that leaves 8. The app lists every such file in
 **Settings → Deck**.
 
 A look at a real deck, the 8 ball (the `---` line ends the header):
