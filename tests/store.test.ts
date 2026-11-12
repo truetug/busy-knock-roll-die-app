@@ -43,11 +43,16 @@ describe("a bar that keeps storage from the app (HTTP API 27.14)", () => {
     );
   });
 
-  it("reads the decks from the repository at this version's tag", async () => {
+  // 27.14 answers 403; 27.15 answers 400 with "Path ... is not allowed for JS apps" in its log.
+  it.each([
+    ["403", () => new Response("Forbidden", { status: 403 })],
+    ["400", () => new Response('{"error":"Invalid path"}', { status: 400 })],
+    ["no answer", () => Promise.reject(new TypeError("fetch failed"))],
+  ])("reads the decks from the repository at this version's tag when storage gives %s", async (_, refusal) => {
     const urls: string[] = [];
     vi.stubGlobal("fetch", async (url: string, init?: { headers?: Record<string, string> }) => {
       urls.push(url);
-      if (url.startsWith("http://127.0.0.1/")) return new Response("Forbidden", { status: 403 });
+      if (url.startsWith("http://127.0.0.1/")) return refusal();
       const [, from, to] = /bytes=(\d+)-(\d+)/.exec(init?.headers?.Range ?? "") ?? [];
       const file = readFileSync(join("src", url.slice(url.lastIndexOf("/") + 1)));
       return new Response(file.subarray(Number(from), Number(to) + 1), { status: 206 });
@@ -60,5 +65,17 @@ describe("a bar that keeps storage from the app (HTTP API 27.14)", () => {
     expect((await loadItem(deck, 1)).length).toBe(deck.steps.length);
     expect(urls.filter((u) => u.startsWith("http://127.0.0.1/"))).toHaveLength(1);
     expect(urls.at(-1)).toBe(`https://raw.githubusercontent.com/${REPO}/${DECKS_REF}/src/deck-classic.txt`);
+  });
+
+  it.each([403, 400])("leaves the deck list as built when storage refuses with %s", async (status) => {
+    const urls: string[] = [];
+    vi.stubGlobal("fetch", async (url: string) => {
+      urls.push(url);
+      return new Response('{"error":"Invalid path"}', { status });
+    });
+    const { syncDeckOptions } = await import("../src/deck/discovery.ts");
+
+    await expect(syncDeckOptions()).resolves.toBeUndefined();
+    expect(urls).toHaveLength(1);
   });
 });

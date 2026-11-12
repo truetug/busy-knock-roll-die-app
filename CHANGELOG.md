@@ -3,6 +3,19 @@
 All notable changes are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project
 follows [Semantic Versioning](https://semver.org/).
 
+## [1.2.1]
+
+### Fixed
+
+- Firmware with HTTP API 27.15 refuses storage to apps with 400 instead of 403, and the app showed "deck-classic.txt: file not
+  found". It now reads the decks from this repository whatever the refusal, and when the request gets no answer at all.
+- On the same firmware the deck list sync logged "Cannot read property 'deck' of undefined" at every start; it now leaves the
+  list the build wrote, as on 27.14.
+
+### Changed
+
+- The catalog screenshots in `screenshots/` are frames taken from a bar (firmware API 27.15) instead of the landing page images.
+
 ## [1.2.0]
 
 ### Changed

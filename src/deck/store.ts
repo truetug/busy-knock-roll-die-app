@@ -12,7 +12,7 @@ const RESOURCES_DIR = `/ext/user_assets/${APP}/resources`;
 const HEADER_CHUNK = 1024;
 const HEADER_CHUNKS_MAX = 4;
 // Since HTTP API 27.14 the firmware lets an app reach only a short list of endpoints, and storage is not on it: the app cannot read
-// its own resources/ (403). Until it can, the decks are read from the app's repository at this version's tag, which answers Range
+// its own resources/ (403 on 27.14, 400 "not allowed for JS apps" on 27.15). Until it can, the decks are read from the app's repository at this version's tag, which answers Range
 // requests the same way; that needs Wi-Fi. The files and their sizes are known at build time (files.ts).
 const REMOTE_DIR = `https://raw.githubusercontent.com/${REPO}/${DECKS_REF}/src`;
 let remote = false;
@@ -22,10 +22,11 @@ export type ResourceFile = { name: string; size: number };
 /** The files in the resources folder, with sizes. */
 export async function listResources(): Promise<ResourceFile[]> {
   if (remote) return DECK_FILES;
-  const res = await fetch(`${API}/storage/list?path=${encodeURIComponent(RESOURCES_DIR)}`);
-  if (res.status === 403) {
+  const res = await fetch(`${API}/storage/list?path=${encodeURIComponent(RESOURCES_DIR)}`).catch(() => null);
+  // Any refusal, whatever its code, means the folder is out of reach: firmware answered 403 and later 400.
+  if (res === null || !res.ok) {
     remote = true;
-    console.log(`${APP}: storage is closed to apps, reading the decks from ${REMOTE_DIR}`);
+    console.log(`${APP}: storage answered ${res?.status ?? "nothing"}, reading the decks from ${REMOTE_DIR}`);
     return DECK_FILES;
   }
   const body = (await res.json()) as { list?: { type?: string; name: string; size?: number }[] };
