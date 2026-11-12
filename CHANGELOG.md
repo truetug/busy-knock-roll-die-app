@@ -3,6 +3,17 @@
 All notable changes are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project
 follows [Semantic Versioning](https://semver.org/).
 
+## [1.2.0]
+
+### Changed
+
+- The app id is `info.truetug.knock` (was `app.busy.knock_roll`, a namespace kept for official BUSY apps), so it can be published
+  in the BUSY app catalog. The bar treats it as a new app: settings chosen in 1.1.0 start from the defaults.
+
+### Added
+
+- Catalog screenshots in `screenshots/`: the bar's 72×16 screen, as on the landing page.
+
 ## [1.1.0]
 
 ### Changed

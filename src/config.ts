@@ -1,7 +1,7 @@
 // Tunable numbers and colours. Nothing here imports anything, so that the tools can use the app's own code.
 
 /** The id the app draws under; the device clears elements by it (it is the "id" in appmeta/manifest.json, which a test checks). */
-export const APP = "app.busy.knock_roll";
+export const APP = "info.truetug.knock";
 /** The app's repository on GitHub: the decks are read from it while the bar keeps them from the app (see deck/store.ts). */
 export const REPO = "truetug/busy-knock-roll-die-app";
 
@@ -11,7 +11,7 @@ export const DEFAULT_DECK = "classic";
 export const DEFAULT_COLOR = "#7C3AEDFF";
 
 // ── Device limits ───────────────────────────────────────────────────────────
-/** The storage API answers 400 to a path of 64 characters or more. With the app id and the file name affixes that leaves a deck id at most 7 characters (a shipped deck like "classic" fills it exactly). */
+/** The storage API answers 400 to a path of 64 characters or more. With the app id and the file name affixes that leaves a deck id at most 8 characters; decks keep to 7, as "classic". */
 export const STORAGE_PATH_MAX = 63;
 
 // ── Timing ──────────────────────────────────────────────────────────────────
