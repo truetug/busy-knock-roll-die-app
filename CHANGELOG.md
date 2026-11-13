@@ -9,6 +9,11 @@ follows [Semantic Versioning](https://semver.org/).
 
 - The catalog screenshots had red and blue swapped: the bar's screen API returns BGR, and the frames were read as RGB.
 
+### Changed
+
+- New catalog screenshots, taken from the bar step by step for dice, playing cards and tarot: the invitation, the spinning
+  deck, the result. The die comes first.
+
 ## [1.2.1]
 
 ### Fixed
